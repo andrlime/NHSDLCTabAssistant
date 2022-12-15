@@ -1,0 +1,34 @@
+{
+  "name": "tabrabbit-fe",
+  "version": "0.0.1",
+  "description": "Tabrabbit Frontend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p $PORT",
+    "lint": "next lint"
+  },
+  "author": "Andrew Li <54134293+andrewleaf22@users.noreply.github.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "airtable": "^0.11.5",
+    "axios": "^1.2.0",
+    "fs": "^0.0.1-security",
+    "html2canvas": "^1.4.1",
+    "next": "^13.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-file-reader": "^1.1.4",
+    "react-router": "^6.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "@types/react": "^18.0.25",
+    "dotenv": "^16.0.3",
+    "eslint": "8.28.0",
+    "eslint-config-next": "13.0.5",
+    "typescript": "^4.9.3"
+  }
+}

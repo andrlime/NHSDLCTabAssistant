@@ -1,0 +1,138 @@
+$black: #3A001E;
+$white: #FFF6F0;
+
+$dark: #0E397A;
+$darktwo: #4A1231;
+$light: #ECC132;
+$verylight: #FEE499;
+
+.headers {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    //align-items: center;
+    width: 100%;
+    min-width: 400px;
+    padding: 0.5rem;
+
+    .divisionName {
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-weight: 700;
+        font-size: 3rem;
+        color: $dark;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .roundName {
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-weight: 700;
+        font-size: 2.5rem;
+        color: $dark;
+        text-align: center;
+        white-space: nowrap;
+    }
+}
+
+.tables {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 75%;
+    max-width: 1200px;
+    min-width: 500px;
+    padding: 0.5rem;
+
+    .boxA {
+        margin: 2rem;
+    }
+
+    .timeLabel {
+        font-size: 1.25rem;
+        color: #000;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.2rem;
+    }
+
+    #one {
+        tr:nth-child(1) {
+            td {
+                text-align: center;
+                padding: 0.2rem;
+                background-color: $dark;
+                color: #fff;
+                font-weight: 800;
+                width: 100%;
+                font-size: 1.1rem;
+                white-space: nowrap;
+                border: 1px solid $black;
+            }
+        }
+    }
+
+    #two {
+        tr:nth-child(1) {
+            td {
+                text-align: center;
+                padding: 0.2rem;
+                background-color: $darktwo;
+                color: #fff;
+                font-weight: 800;
+                width: 100%;
+                font-size: 1.1rem;
+                white-space: nowrap;
+                border: 1px solid $black;
+            }
+        }
+    }
+
+    #three {
+        tr:nth-child(1) {
+            td {
+                text-align: center;
+                padding: 0.2rem;
+                background-color: $dark;
+                color: #fff;
+                font-weight: 800;
+                width: 100%;
+                font-size: 1.1rem;
+                white-space: nowrap;
+                border: 1px solid $black;
+            }
+        }
+    }
+}
+
+.footer {
+    display: flex;
+    width: 100%;
+    padding: 1rem;
+}
+
+.table {
+    width: 100%;
+    border: 1px solid $black;
+    tr {
+        td {
+            text-align: center;
+            background-color: #FFF;
+            padding: 0.2rem;
+            color: #000;
+            width: 100%;
+            white-space: nowrap;
+            border: 1px solid $black;
+        }
+
+        td:nth-child(1) {
+            text-align: center;
+            background-color: $verylight;
+            padding: 0.2rem;
+            color: #000;
+            width: 100%;
+            white-space: nowrap;
+            border: 1px solid $black;
+        }
+    }
+}
