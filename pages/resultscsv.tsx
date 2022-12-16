@@ -15,7 +15,7 @@ const toolbox: Tool[] = [
   {id: 1, name: "Pairings Generator", description: "Generate pairings image from horizontal schematic", link: "/pair", active: false},
   {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: false},
   {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: true},
-  {id: 9, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
+  {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
 ];
 
 const Home: NextPage = () => {
@@ -58,7 +58,7 @@ const Home: NextPage = () => {
     readFile(file).then((input) => {
       speakersRawData.current = input;
       console.log("Read the file ", input.length)
-      let rx = /.*[\n]/g;
+      let rx = /.*\n/g;
       let thingsToParse: any[] = (input.match(rx) || []);
       if(thingsToParse.length < 1) return;
 
@@ -204,7 +204,7 @@ const Home: NextPage = () => {
             gender: data[7],
             email: data[9],
             phone: data[10],
-            school: data[12],
+            school: data[12], // if birthday is blank go back one
             gradeLevel: data[14],
             parentPhone: data[16],
             teamAwards: teamThatIWant.teamAward,

@@ -36,7 +36,7 @@ const toolbox: Tool[] = [
   {id: 1, name: "Pairings Generator", description: "Generate pairings image from horizontal schematic", link: "/pair", active: false},
   {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: true},
   {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: false},
-  {id: 9, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
+  {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
 ];
 
 const Home: NextPage = () => {
@@ -108,7 +108,7 @@ const Home: NextPage = () => {
     if (type==1) {
       console.log("Reading student namelist")
       let allStudents = (input.slice(input.indexOf("1,")));
-      const rx_by_division = /[A-Z][a-zA-Z]+[,]{5,}/g;
+      const rx_by_division = /[A-Z][a-zA-Z]+,{5,}/g;
       const full_line_rx = /.+/g; //matches all full lines
       let divisions = (allStudents.match(rx_by_division));
       let divisionIndexes = [0].concat(divisions?.map(e => allStudents.indexOf(e)) || []);
@@ -124,17 +124,14 @@ const Home: NextPage = () => {
         for(let ind in listOfAllStrings) {
           let k = listOfAllStrings[ind];
           if(k.match(rx_by_division) || k.indexOf(",,,,,,,,,,,,") != -1) continue;
-          let decipherStringRx = /[^,]*/g;
-          let speakerInfo: any[] = (k.match(decipherStringRx)) || [];
-          let isFirst: boolean = speakerInfo[0] != '';
-          speakerInfo = (isFirst ? speakerInfo.splice(2) : speakerInfo.splice(1));
+          let speakerInfo = k.split(',');
           let speakerX: Speaker = {
-            division: parseInt(speakerInfo[4]) < 300 ? "Middle School" : parseInt(speakerInfo[4]) < 500 ? "Novice" : parseInt(speakerInfo[4]) < 800 ? "Open" : "Varsity",
-            id: speakerInfo[4],
-            teamid: speakerInfo[2],
-            name_cn: speakerInfo[6],
-            name_en: speakerInfo[8],
-            school: speakerInfo[22]!=""?speakerInfo[22]:speakerInfo[23]
+            division: speakerInfo[1],
+            id: parseInt(speakerInfo[3]) || 0,
+            teamid: parseInt(speakerInfo[2]) || 0,
+            name_cn: speakerInfo[4],
+            name_en: speakerInfo[5],
+            school: speakerInfo[13]
           }
           allSpeakersList.push(speakerX);
         }

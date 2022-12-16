@@ -10,7 +10,7 @@ const toolbox: Tool[] = [
   {id: 1, name: "Pairings Generator", description: "Generate pairings image from horizontal schematic", link: "/pair", active: false},
   {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: false},
   {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: false},
-  {id: 9, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
+  {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
 ];
 
 const ToolCard: FunctionComponent<{id: number, name: string, description: string, onClick?: any}> = ({id, name, description, onClick}) => (
