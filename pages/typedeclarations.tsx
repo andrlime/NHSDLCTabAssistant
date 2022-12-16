@@ -1,3 +1,6 @@
+import type { NextPage } from 'next';
+import React from 'react';
+
 export type Speaker = {
     division: string,
     id: number,
@@ -57,3 +60,7 @@ export type Debate = {
     roomCode: string;
     judgeName: any;
 };
+
+const Home: NextPage = () => (<></>);
+
+export default Home;

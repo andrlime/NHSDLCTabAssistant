@@ -4,9 +4,7 @@ import Link from 'next/link';
 import React, { FunctionComponent,  useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
-import stylesQ from '../styles/R.module.css';
 import type { Tool, Team, Speaker } from './typedeclarations';
-import html2canvas from "html2canvas";
 
 const BreakTable: FunctionComponent<{teams: Array<Team>, division: string, topx: number}> = ({teams, division, topx}) => {
   return (
@@ -63,7 +61,7 @@ const Home: NextPage = () => {
     <div style={{padding: "1rem", color: "#0E397A"}}/>
     {!burger ? (<div>
       {toolbox.map((item, index) => (
-        <Link key={item**index*17} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
+        <Link key={item.id**index*17} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
       ))}
     </div>) : ""}
   </div>);
