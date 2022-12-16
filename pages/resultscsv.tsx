@@ -342,7 +342,7 @@ const Home: NextPage = () => {
     <div style={{padding: "1rem", color: "#0E397A"}}/>
     {!burger ? (<div>
       {toolbox.map((item, index) => (
-        <Link href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
+        <Link key={item.id**index*14} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
       ))}
     </div>) : ""}
   </div>);

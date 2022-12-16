@@ -40,7 +40,7 @@ const Home: NextPage = () => {
     <div style={{padding: "1rem", color: "#0E397A"}}/>
     {!burger ? (<div>
       {toolbox.map((item, index) => (
-        <Link href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
+        <Link key={index**item.id**5} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
       ))}
     </div>) : ""}
   </div>);
@@ -55,7 +55,7 @@ const Home: NextPage = () => {
       <div className={styles.content}>
         <div className={styles.heading}>Tools List</div>
         {toolbox.map((item, index) => (
-          <Link href={item.link}>
+          <Link key={item.id**index**4} href={item.link}>
             <ToolCard onClick={(e: any) => console.log(e)} key={item.id**index} id={item.id} name={item.name} description={item.description}/>
           </Link>
         ))}
