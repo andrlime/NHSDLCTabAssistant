@@ -88,9 +88,11 @@ const Home: NextPage = () => {
     let divisions = (allStudents.match(rx_by_division));
     let divisionIndexes = [0].concat(divisions?.map(e => allStudents.indexOf(e)) || []);
     let strings_to_test: string[] = [];
-    for(let aa = 0; aa < divisionIndexes.length-1; aa ++) {
-      strings_to_test.push(allStudents.substring(divisionIndexes[aa], divisionIndexes[aa+1]));
+    for(let aa = 1; aa < divisionIndexes.length; aa ++) {
+      strings_to_test.push(allStudents.substring(divisionIndexes[aa-1], divisionIndexes[aa]));
     }
+
+    strings_to_test.push(allStudents.substring(divisionIndexes[divisionIndexes.length-1]));
 
     let outputs: Array<{name: string, data: string}> = [];
     for(let testing_string of strings_to_test) {
@@ -101,7 +103,7 @@ const Home: NextPage = () => {
       let listOfAllStrings = (testing_string.match(full_line_rx)) || [];
       for(let ind in listOfAllStrings) {
         let k = listOfAllStrings[ind];
-        if(k.match(rx_by_division) || k.indexOf(",,,,,,,,,,,,") != -1) continue;
+        if((k.match(rx_by_division) || k.indexOf(",,,,,,,,,,,,") != -1) && !k.match(/\d+/g)) continue;
         let speakerInfo = k.split(',');
         let speakerX: Speaker = {
           division: speakerInfo[1],
@@ -131,7 +133,8 @@ const Home: NextPage = () => {
       for(let team of allTeamsList) {
         //let outputstr = "School Name, State/Prov, Entry Code,Pairing Seed (1-100), Speaker 1 First,Speaker 1 Middle,Speaker 1 Last,Speaker 1 Novice (Y/N),Speaker 1 Gender (F/M/O),Speaker 1 Email,Speaker 2 First,Speaker 2 Middle,Speaker 2 Last,Speaker 2 Novice (Y/N),Speaker 2 Gender (F/M/O),Speaker 2 Email,Speaker 3 First,Speaker 3 Middle,Speaker 3 Last,Speaker 3 Novice (Y/N),Speaker 3 Gender (F/M/O),Speaker 3 Email\n"; // need to write this
         let school_name = team.speaker1.school == team.speaker2.school ? team.speaker1.school : `H - ${team.speaker1.school} / ${team.speaker2.school}`;
-       outputstr += `${school_name},,${team.id},,${team.speaker1.name_en},,${team.speaker1.id},N,O,,${team.speaker2.name_en},,${team.speaker2.id},N,O,,,,,,,,\n`
+        if(team.speaker2.name_en!="") outputstr += `${school_name},,${team.id},,${team.speaker1.name_en},,${team.speaker1.id},N,O,,${team.speaker2.name_en},,${team.speaker2.id},N,O,,,,,,,,\n`;
+        else outputstr += `${school_name},,${team.id},,${team.speaker1.name_en},,${team.speaker1.id},N,O,,,,,,,,,,,,,,\n`;
       }
 
       outputs.push({name: division || "", data: outputstr});
@@ -143,7 +146,6 @@ const Home: NextPage = () => {
   const exportAsCsv = () => {
     let data = processInput(namelist);
     for(let s of data) {
-      console.log(s);
       let d = 'data:text/csv;charset=utf-8,' + encodeURI(s.data);
       let fileName = `${s.name}_EntriesList.csv`;
       saveAs(d, fileName);
