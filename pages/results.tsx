@@ -11,7 +11,12 @@ import html2canvas from "html2canvas";
 const BreakTable: FunctionComponent<{teams: Array<Team>, division: string, topx: number}> = ({teams, division, topx}) => {
   return (
     <>
-      {(teams.filter(e => e.division==division)).slice(0,topx).map((item, index) => (
+      {(teams.filter(e => {
+        if(division=="MS" || division=="Middle School") return e.division=="MS"||e.division=="Middle School"
+        else if(division=="Open"||division=="O") return e.division=="O"||e.division=="Open"
+        else if(division=="Novice"||division=="N") return e.division=="N"||e.division=="Novice"
+        else if(division=="V" || division=="Varsity") return e.division=="V"||e.division=="Varsity"
+      })).slice(0,topx).map((item, index) => (
         <tr key={index} style={{height: "1rem"}}>
           <td style={{width:"10%"}}>{index+1}</td><td style={{width:"10%"}}>{item.id}</td><td style={{width:"40%"}}>{item.speaker1.name_cn} - {item.speaker1.school}</td><td style={{width:"40%"}}>{item.speaker2.name_cn} - {item.speaker2.school}</td>
         </tr>
@@ -23,7 +28,12 @@ const BreakTable: FunctionComponent<{teams: Array<Team>, division: string, topx:
 const SpeakerTable: FunctionComponent<{speakers: Array<Speaker>, division: string, topx: number}> = ({speakers, division, topx}) => {
   return (
     <>
-      {(speakers.filter(e => e.division==division)).slice(0,topx).map((item, index) => (
+      {(speakers.filter(e => {
+        if(division=="MS" || division=="Middle School") return e.division=="MS"||e.division=="Middle School"
+        else if(division=="Open"||division=="O") return e.division=="O"||e.division=="Open"
+        else if(division=="Novice"||division=="N") return e.division=="N"||e.division=="Novice"
+        else if(division=="V" || division=="Varsity") return e.division=="V"||e.division=="Varsity"
+      })).slice(0,topx).map((item, index) => (
         <tr key={index} style={{height: "1rem"}}>
           <td style={{width:"10%"}}>{index+1}</td><td style={{width:"10%"}}>{item.id}</td><td style={{width:"40%"}}>{item.name_cn}</td><td style={{width:"40%"}}>{item.school}</td>
         </tr>
@@ -256,10 +266,10 @@ const Home: NextPage = () => {
                 <div>How many? <input type={'number'} style={{width: "11rem"}} value={topx} onChange={(e: any) => {setTopx(e.target.value); { if (!isShowBreaks) setAwardType(`Top ${e.target.value} Speaker Awards`)}}} placeholder={`top how many ${isShowBreaks ? "teams" : "speakers"}?`}/></div>
               </div>
               <div style={{padding: "1rem", paddingTop: "0", display: "flex", flexDirection: "row", alignItems: "center", width: "100%"}}>
-                <div style={{marginRight: "1rem"}}><input checked={division=="Middle School"} onChange={(_) => {setDivision("Middle School")}} type={'radio'}/> Middle School</div>
-                <div style={{marginRight: "1rem"}}><input checked={division=="Open"} onChange={(_) => {setDivision("Open")}} type={'radio'}/> Open</div>
-                <div style={{marginRight: "1rem"}}><input checked={division=="Novice"} onChange={(_) => {setDivision("Novice")}} type={'radio'}/> Novice</div>
-                <div><input checked={division=="Varsity"} onChange={(_) => {setDivision("Varsity")}} type={'radio'}/> Varsity (if unavailable, will show nothing)</div>
+                <div style={{marginRight: "1rem"}}><input checked={division=="Middle School"||division=="MS"} onChange={(_) => {setDivision("MS")}} type={'radio'}/> Middle School</div>
+                <div style={{marginRight: "1rem"}}><input checked={division=="Open"||division=="O"} onChange={(_) => {setDivision("O")}} type={'radio'}/> Open</div>
+                <div style={{marginRight: "1rem"}}><input checked={division=="Novice"||division=="N"} onChange={(_) => {setDivision("N")}} type={'radio'}/> Novice</div>
+                <div><input checked={division=="Varsity"||division=="V"} onChange={(_) => {setDivision("V")}} type={'radio'}/> Varsity (if unavailable, will show nothing)</div>
               </div>
           </div>
 
@@ -271,7 +281,7 @@ const Home: NextPage = () => {
           <div className={stylesQ.tables} id="CONTAINER_TO_EXPORT">
 
           {(teamsInOrder.length > 1) || (speakersInOrder.length > 1) ? (<div className={stylesQ.headers}>
-            <div className={stylesQ.divisionName}>{division}</div>
+            <div className={stylesQ.divisionName}>{division=="MS"?"Middle School":division=="O"?"Open":division=="N"?"Novice":"Varsity"}</div>
             <div className={stylesQ.roundName}>{typeOfAward}</div>
           </div>) : ""}
             
