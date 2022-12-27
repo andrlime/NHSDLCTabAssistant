@@ -2,6 +2,7 @@ $black: #3A001E;
 $white: #FFF6F0;
 
 $dark: #0E397A;
+$red: #b81818;
 $darktwo: #4A1231;
 $light: #ECC132;
 $verylight: #ffffff;
@@ -226,6 +227,13 @@ $verylight: #ffffff;
             border: 1px solid $dark;
         }
 
+        input[type=password] {
+            background-color: $verylight;
+            padding: 0.5rem;
+            border-radius: 2rem;
+            border: 1px solid $dark;
+        }
+
         input[type=number] {
             background-color: $verylight;
             padding: 0.5rem;
@@ -247,9 +255,20 @@ $verylight: #ffffff;
     }
 }
 
+#customlabel {
+    align-items: center
+}
+
+#customrow:hover {
+    cursor: pointer;
+}
 @media (max-width: 700px) {
     .navbar {
         display: none;
+    }
+
+    #customlabel {
+        align-items: baseline;
     }
 
     .sublabel {
@@ -258,5 +277,37 @@ $verylight: #ffffff;
         button {
             width: fit-content;
         }
+    }
+
+    .createform {
+        flex-direction: column;
+    }
+}
+
+.createform {
+    display: flex;
+    margin: 0.2rem;
+
+    input {
+        margin: 0.2rem;
+    }
+}
+
+.deleteElement {
+    button:hover {
+        cursor: pointer;
+        background-color: $red;
+        color: $verylight;
+        transition: 350ms all ease-in-out;
+    }
+
+    button {
+        background-color: #edbdbd;
+        color: $black;
+        transition: 350ms all ease-in-out;
+        border-radius: 0.25rem;
+        border: none;
+        white-space: nowrap;
+        height: fit-content;
     }
 }

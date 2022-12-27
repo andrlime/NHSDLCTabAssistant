@@ -16,6 +16,7 @@ const toolbox: Tool[] = [
   {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: false},
   {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: true},
   {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
+  {id: 99, name: "Evaluate Judges", description: "Judge evaluation system", link: "/evaluate", active: false}
 ];
 
 const Home: NextPage = () => {
@@ -194,6 +195,8 @@ const Home: NextPage = () => {
           if(tm.teamCode == teamCodeTarget) teamThatIWant = tm;
         }
 
+        console.log(data);
+
         if(speakerThatIWant && teamThatIWant) {
           let line: LineSales = {
             teamCode: teamCodeTarget,
@@ -204,7 +207,7 @@ const Home: NextPage = () => {
             gender: data[7],
             email: data[9],
             phone: data[10],
-            school: data[12], // if birthday is blank go back one
+            school: data[12].match(/G*\d/g) ? data[13] : data[12], // if birthday is blank go back one
             gradeLevel: data[14],
             parentPhone: data[16],
             teamAwards: teamThatIWant.teamAward,
@@ -233,6 +236,7 @@ const Home: NextPage = () => {
     for(let aa = 0; aa < divisionIndexes.length-1; aa ++) {
       strings_to_test.push(allStudents.substring(divisionIndexes[aa], divisionIndexes[aa+1]));
     }
+    strings_to_test.push(allStudents.substring(divisionIndexes[divisionIndexes.length-1]));
 
     rawNamelist.current = strings_to_test; // this just has one massive string per division
 
@@ -240,22 +244,19 @@ const Home: NextPage = () => {
     let allTeamsList: Array<Team> = [];
     for(let testing_string of strings_to_test) {
       let listOfAllStrings = (testing_string.match(full_line_rx)) || [];
-      for(let ind in listOfAllStrings) {
-        let k = listOfAllStrings[ind];
-        if(k.match(rx_by_division) || k.indexOf(",,,,,,,,,,,,") != -1) continue;
-        let decipherStringRx = /[^,]*/g;
-        let speakerInfo: any[] = (k.match(decipherStringRx)) || [];
-        let isFirst: boolean = speakerInfo[0] != '';
-        speakerInfo = (isFirst ? speakerInfo.splice(2) : speakerInfo.splice(1));
-        let speakerX: Speaker = {
-          division: parseInt(speakerInfo[4]) < 300 ? "Middle School" : parseInt(speakerInfo[4]) < 500 ? "Novice" : parseInt(speakerInfo[4]) < 800 ? "Open" : "Varsity",
-          id: speakerInfo[4],
-          teamid: speakerInfo[2],
-          name_cn: speakerInfo[6],
-          name_en: speakerInfo[8],
-          school: speakerInfo[22]!=""?speakerInfo[22]:speakerInfo[23]
-        }
-        allSpeakersList.push(speakerX);
+        for(let ind in listOfAllStrings) {
+          let k = listOfAllStrings[ind];
+          if(k.match(rx_by_division) || k.indexOf(",,,,,,,,,,,,") != -1) continue;
+          let speakerInfo = k.split(',');
+          let speakerX: Speaker = {
+            division: speakerInfo[1],
+            id: parseInt(speakerInfo[3]) || 0,
+            teamid: parseInt(speakerInfo[2]) || 0,
+            name_cn: speakerInfo[4],
+            name_en: speakerInfo[5],
+            school: speakerInfo[13]
+          }
+          allSpeakersList.push(speakerX);
       }
 
       // process them into teams. they are in order, so index by 2
@@ -303,9 +304,10 @@ const Home: NextPage = () => {
     if (!divisions) return "how did this happen?!?!"; // this code WILL NOT RUN
     else {
       let [tms, spks] = [divisions.teamsInOrder, divisions.speakersInOrder];
+      console.log(tms, spks);
       let outputString = `${name} Results Spreadsheet,Generated on ${new Date().toISOString()},,,,\n`;
       for (let team of tms) {
-        outputString += `${team.label},${team.team.id},${team.team.speaker1.name_cn},${team.team.speaker1.school},${team.team.speaker2.name_cn},${team.team.speaker2.school}\n`;
+        if(team.team) outputString += `${team.label},${team.team.id},${team.team.speaker1.name_cn},${team.team.speaker1.school},${team.team.speaker2.name_cn},${team.team.speaker2.school}\n`;
       }
 
       for (let speaker of spks) {
@@ -375,7 +377,7 @@ const Home: NextPage = () => {
           </div>
           <div style={{padding: "0.5rem", paddingLeft: "0rem"}} className={styles.sublabel}>
               Team Ranks Raw Data:&nbsp;
-              <textarea id={"csvFileInput"} style={{width: "50%", height: "100%"}} value={divisionOneTeams} onChange={(e: any) => setD1Te(e.target.value)}/>
+              <textarea placeholder='type a random character to get just top speakers' id={"csvFileInput"} style={{width: "50%", height: "100%"}} value={divisionOneTeams} onChange={(e: any) => setD1Te(e.target.value)}/>
           </div>
           <div style={{padding: "0.5rem", paddingLeft: "0rem"}} className={styles.sublabel}>
               Team Ranks CSV:&nbsp;

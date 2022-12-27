@@ -47,6 +47,7 @@ const toolbox: Tool[] = [
   {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: true},
   {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: false},
   {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
+  {id: 99, name: "Evaluate Judges", description: "Judge evaluation system", link: "/evaluate", active: false}
 ];
 
 const Home: NextPage = () => {
@@ -126,6 +127,7 @@ const Home: NextPage = () => {
       for(let aa = 0; aa < divisionIndexes.length-1; aa ++) {
         strings_to_test.push(allStudents.substring(divisionIndexes[aa], divisionIndexes[aa+1]));
       }
+      strings_to_test.push(allStudents.substring(divisionIndexes[divisionIndexes.length-1]));
 
       let allSpeakersList: Array<Speaker> = [];
       let allTeamsList: Array<Team> = [];
