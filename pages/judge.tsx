@@ -184,7 +184,7 @@ const CreateForm: FunctionComponent<{callback: Function, judge: Judge}> = ({call
           bias: bias,
           weight: improvement ? totalWeight(judge)*0.25 : 1,
         });
-        axios.post(`http://${backendUrl.current}/update/judge/${apiKey.current}/${query.judgeId}`, body).then((_) => {})
+        axios.post(`https://${backendUrl.current}/update/judge/${apiKey.current}/${query.judgeId}`, body).then((_) => {})
       }}>Create Evaluation</button>
     </div>
 
@@ -222,13 +222,13 @@ const Home: NextPage = () => {
       backendUrl.current = res.data.backendUrl || "";
       apiKey.current = res.data.apiKey || "";
       // replace later
-      axios.get(`http://${backendUrl.current}/get/judge/${apiKey.current}/${query.judgeId || ""}`).then((res) => {
+      axios.get(`https://${backendUrl.current}/get/judge/${apiKey.current}/${query.judgeId || ""}`).then((res) => {
         setJudge(res.data.result);
         setLoaded(true);
       });
       if(localStorage.us && localStorage.pw) {
         let userpass = `U1A${localStorage.us}P28${localStorage.pw}`;
-        axios.get(`http://${backendUrl.current}/auth/${userpass}`).then((res) => {
+        axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
           if(res.data.auth) {
             setAuth(true);
             localStorage.setItem('us', (query.user || "").toString());
@@ -237,7 +237,7 @@ const Home: NextPage = () => {
         });
       } else {
         let userpass = `U1A${query.user}P28${query.pass}`;
-        axios.get(`http://${backendUrl.current}/auth/${userpass}`).then((res) => {
+        axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
           if(res.data.auth) {
             setAuth(true);
             localStorage.setItem('us', (query.user || "").toString());
@@ -350,7 +350,7 @@ const Home: NextPage = () => {
                       let newJudge = {_id: judge._id, name: judge.name, email: judge.email, evaluations: j};
                       setJudge(newJudge);
                       // call API route to delete the judge from the database
-                      axios.delete(`http://${backendUrl.current}/delete/evaluation/${apiKey.current}`, {data: {judgeid: query.judgeId, index: e}}).then((_) => {})
+                      axios.delete(`https://${backendUrl.current}/delete/evaluation/${apiKey.current}`, {data: {judgeid: query.judgeId, index: e}}).then((_) => {})
 
                     }} id={index}/></td>
                   </tr>

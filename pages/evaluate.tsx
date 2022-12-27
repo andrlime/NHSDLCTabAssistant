@@ -70,7 +70,7 @@ const CreateJudge: FunctionComponent<{callback: Function, addALot: Function}> = 
         if ( !judgeEmail.match((/((\w|[-]|[.])+[@]\w+([.]\w+)+)/g)) ) return;
 
         else {
-          axios.post(`http://${backendUrl.current}/create/judge`, body).then((res) => {
+          axios.post(`https://${backendUrl.current}/create/judge`, body).then((res) => {
             callback({
               _id: res.data.result.insertedId,
               name: judgeName,
@@ -215,7 +215,7 @@ const Home: NextPage = () => {
       backendUrl.current = res.data.backendUrl || "localhost:9093";
       apiKey.current = res.data.apiKey || "";
       // replace later
-      axios.get(`http://${backendUrl.current}/get/alljudges/${apiKey.current}`).then((res) => {
+      axios.get(`https://${backendUrl.current}/get/alljudges/${apiKey.current}`).then((res) => {
         if(res.data != null) {
           setJudges(res.data.result);
         }
@@ -226,7 +226,7 @@ const Home: NextPage = () => {
 
       let userpass = `U1A${localStorage.us}P28${localStorage.pw}`;
     
-      axios.get(`http://${backendUrl.current}/auth/${userpass}`).then((res) => {
+      axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
         if(res.data.auth) {
           setAuth(true);
         } else {
@@ -322,7 +322,7 @@ const Home: NextPage = () => {
             <input placeholder='password' value={password} onChange={(e)=>setPass(e.target.value)} type={'password'} style={{border: gotPwWrong ? `2px solid red` : "", width: "25%", minWidth: "200px", padding: "0.2rem", margin: "0.25rem"}}></input></>)}
             {auth ? "" : <button onClick={(e) => {
               let userpass = `U1A${username}P28${password}`;
-              axios.get(`http://${backendUrl.current}/auth/${userpass}`).then((res) => {
+              axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
                 if(res.data.auth) {
                   setAuth(true);
                   localStorage.setItem('us', username);
@@ -378,7 +378,7 @@ const Home: NextPage = () => {
                 <td style={{width: "10%"}}><DeleteButton callback={(e: string) => {
                   setJudges(judges.filter((a) => a._id.toString()!=e));
                   // call API route to delete the judge from the database
-                  axios.delete(`http://${backendUrl.current}/delete/judge/${apiKey.current}`, {data: {judgeid: element._id.toString()}}).then((_) => {})
+                  axios.delete(`https://${backendUrl.current}/delete/judge/${apiKey.current}`, {data: {judgeid: element._id.toString()}}).then((_) => {})
 
                 }} id={element._id.toString()}/></td>
               </tr>
@@ -399,7 +399,7 @@ const Home: NextPage = () => {
                 name: ju.name,
                 email: ju.email
               };
-              axios.post(`http://${backendUrl.current}/create/judge`, body).then((_) => {})
+              axios.post(`https://${backendUrl.current}/create/judge`, body).then((_) => {})
             }
             setJudges(j);
           }}/> : ""}
