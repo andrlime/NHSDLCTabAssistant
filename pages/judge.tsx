@@ -141,7 +141,7 @@ const Home: NextPage = () => {
 
               <span className={styles.label}>Current Evaluations</span>
 
-              <table cellSpacing="0" cellPadding="0" className={stylesQ.table} id={stylesQ.one}>
+              {(judge?.evaluations.length||0) > 0 ? <table cellSpacing="0" cellPadding="0" className={stylesQ.table} id={stylesQ.one}>
                 <tbody>
                 <tr style={{height: "1rem"}}>
                   <td style={{width:"4%"}}>Date</td>
@@ -189,9 +189,9 @@ const Home: NextPage = () => {
                 ) : ""}
                 
                 </tbody>
-              </table>
+              </table> : <span className={styles.label}>No Evaluations</span>}
 
-              <span className={styles.label}>Create Evaluation</span>
+              
               {auth ? <CreateEvaluation callback={pushNewEvaluation} judge={judge || {_id: "", name: "", email: "", evaluations: []}}/> : <span className={styles.sublabel}>Login to create</span>}
             
             </div> : "Loading..."}
