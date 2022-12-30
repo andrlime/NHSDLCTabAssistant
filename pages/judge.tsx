@@ -5,170 +5,14 @@ import React, { useEffect, useState, useRef, FunctionComponent } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import stylesQ from '../styles/R.module.css';
-import type { Tool } from './typedeclarations';
 import axios from 'axios';
-import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 import DeleteButton from '../components/buttons/DeleteButton';
 import NavigationBar from '../components/nav/NavigationMenu';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-type Judge = {
-  _id: ObjectId | string,
-  name: string,
-  email: string,
-  evaluations: Evaluation[]
-}
-
-type Evaluation = {
-  tournamentName: string,
-  date: Date | string,
-  roundName: string, // e.g., Round 1 Flight A etc.
-  isPrelim: boolean,
-  isImprovement: boolean,
-  decision: number,
-  comparison: number,
-  citation: number,
-  coverage: number,
-  bias: number,
-  weight: number
-}
-
-const CreateForm: FunctionComponent<{callback: Function, judge: Judge}> = ({callback, judge}) => {
-  const [tournament, setTournament] = useState("");
-  const [round, setRound] = useState("");
-
-  const [dec, setDec] = useState(0.0);
-  const [comp, setComp] = useState(0.0);
-  const [cit, setCit] = useState(0.0);
-  const [cov, setCov] = useState(0.0);
-  const [bias, setBias] = useState(0.0);
-
-  const [improvement, setImprovement] = useState(false);
-  const [prelim, setPrelim] = useState(true);
-
-  const backendUrl = useRef("");
-  const apiKey = useRef("");
-
-  useEffect(() => {
-    axios.get("/api/getkey").then((res)=> {
-      backendUrl.current = res.data.backendUrl || "";
-      apiKey.current = res.data.apiKey || "";
-    });
-  },[]);
-
-  const { query } = useRouter();
-
-  const totalWeight = (j: Judge): number => {
-    let s = 0;
-    for(let i of j.evaluations) {
-      s+=i.weight;
-    }
-
-    return s;
-  }
-
-  return (<div className={styles.sublabel} style={{paddingLeft: "0rem", flexDirection: "column"}}>
-
-    <div className={styles.createform}>
-      <div style={{margin: "0.15rem"}}>Tournament Name: <input value={tournament} onChange={(e) => setTournament(e.target.value)} type={'text'} style={{width: "100%"}}></input></div>
-      <div style={{margin: "0.15rem"}}>Round Name: <input value={round} onChange={(e) => setRound(e.target.value)} type={'text'} style={{width: "100%"}}></input></div>
-    </div>
-    <div className={styles.createform}>
-      <div style={{margin: "0.15rem"}}>Decision Score: <input value={dec} onChange={(e) => {
-        let number = parseFloat(e.target.value) || 0;
-        if (number > 1.5) setDec(1.5);
-        else if (number < 0) setDec(0);
-        else setDec(number);
-      }} type={'number'}></input></div>
-
-      <div style={{margin: "0.15rem"}}>Comparison Score: <input value={comp} onChange={(e) => {
-        let number = parseFloat(e.target.value) || 0;
-        if (number > 1.5) setComp(1.5);
-        else if (number < 0) setComp(0);
-        else setComp(number);
-      }} type={'number'}></input></div>
-
-      <div style={{margin: "0.15rem"}}>Citation Score: <input value={cit} onChange={(e) => {
-        let number = parseFloat(e.target.value) || 0;
-        if (number > 1.5) setCit(1.5);
-        else if (number < 0) setCit(0);
-        else setCit(number);
-      }} type={'number'}></input></div>
-
-      <div style={{margin: "0.15rem"}}>Coverage Score: <input value={cov} onChange={(e) => {
-        let number = parseFloat(e.target.value) || 0;
-        if (number > 1.5) setCov(1.5);
-        else if (number < 0) setCov(0);
-        else setCov(number);
-      }} type={'number'}></input></div>
-
-      <div style={{margin: "0.15rem"}}>Bias Score: <input value={bias} onChange={(e) => {
-        let number = parseFloat(e.target.value) || 0;
-        if (number > 1.5) setBias(1.5);
-        else if (number < 0) setBias(0);
-        else setBias(number);
-      }} type={'number'}></input></div>
-    </div>
-    <div className={styles.createform}>
-      <div style={{marginRight: "0.5rem", whiteSpace: "nowrap"}}>Check if this is an improvement round<input checked={improvement} onChange={(_) => setImprovement(!improvement)} type={'checkbox'}/></div>
-      <div style={{marginRight: "0.5rem", whiteSpace: "nowrap"}}>Check if this is a prelims round<input checked={prelim} onChange={(_) => setPrelim(!prelim)} type={'checkbox'}/></div>
-    </div>
-    <div className={styles.createform}>
-      <button onClick={(_) => {
-        let body = {
-          tName: tournament,
-          rName: round, // e.g., Round 1 Flight A etc.
-          isPrelim: prelim,
-          isImprovement: improvement,
-          decision: dec,
-          comparison: comp,
-          citation: cit,
-          coverage: cov,
-          bias: bias,
-          weight: improvement ? totalWeight(judge)*0.25 : 1,
-          date: new Date()
-        };
-
-        callback({
-          tournamentName: tournament,
-          date: "",
-          roundName: round, // e.g., Round 1 Flight A etc.
-          isPrelim: prelim,
-          isImprovement: improvement,
-          decision: dec,
-          comparison: comp,
-          citation: cit,
-          coverage: cov,
-          bias: bias,
-          weight: improvement ? totalWeight(judge)*0.25 : 1,
-        });
-        axios.post(`https://${backendUrl.current}/update/judge/${apiKey.current}/${query.judgeId}`, body).then((_) => {})
-      }}>Create Evaluation</button>
-    </div>
-
-  </div>);
-}
+import { LineGraph } from '../components/other/LineGraph';
+import { Evaluation } from '../types/Evaluation';
+import { Judge } from '../types/Judge';
+import { CreateEvaluation } from '../components/create/CreateEvaluation';
 
 const Home: NextPage = () => {
   const backendUrl = useRef("");
@@ -257,6 +101,26 @@ const Home: NextPage = () => {
     return s;
   }
 
+  const sumAll = (element: Evaluation) => (element.decision+element.comparison+element.citation+element.coverage+element.bias);
+
+  const deleteButtonCallback = (e: number) => {
+    // delete from frontend view
+    if(!judge) return;
+
+    let j: Evaluation[] = [];
+    // lazy way because i'm stupid
+    for(let i = 0; i < judge.evaluations.length; i ++) {
+      if ( i!=e ) {
+        j.push(judge.evaluations[i]);
+      }
+    }
+    let newJudge = {_id: judge._id, name: judge.name, email: judge.email, evaluations: j};
+    setJudge(newJudge);
+    // call API route to delete the judge from the database
+    axios.delete(`https://${backendUrl.current}/delete/evaluation/${apiKey.current}`, {data: {judgeid: query.judgeId, index: e}}).then((_) => {})
+
+  }
+
   return (
     <div className={styles.everything}>
       <Head>
@@ -273,7 +137,7 @@ const Home: NextPage = () => {
             {loaded ? <div className={styles.form} style={{paddingLeft: "0rem"}}>
 
               <span className={styles.label}>Performance Over Time</span>
-              <Line data={data} />
+              <LineGraph data={data}/>
 
               <span className={styles.label}>Current Evaluations</span>
 
@@ -303,24 +167,9 @@ const Home: NextPage = () => {
                     <td>{element.citation}</td>
                     <td>{element.coverage}</td>
                     <td>{element.bias}</td>
-                    <td style={{background: "#FEE499"}}>{element.decision+element.comparison+element.citation+element.coverage+element.bias}</td>
-                    <td style={{width: "10%"}}><DeleteButton callback={(e: number) => {
-                      // delete from frontend view
-                      if(!judge) return;
+                    <td style={{background: "#FEE499"}}>{sumAll(element)}</td>
 
-                      let j: Evaluation[] = [];
-                      // lazy way because i'm stupid
-                      for(let i = 0; i < judge.evaluations.length; i ++) {
-                        if ( i!=e ) {
-                          j.push(judge.evaluations[i]);
-                        }
-                      }
-                      let newJudge = {_id: judge._id, name: judge.name, email: judge.email, evaluations: j};
-                      setJudge(newJudge);
-                      // call API route to delete the judge from the database
-                      axios.delete(`https://${backendUrl.current}/delete/evaluation/${apiKey.current}`, {data: {judgeid: query.judgeId, index: e}}).then((_) => {})
-
-                    }} id={index} deleteMessage={"Delete Evaluation"}/></td>
+                    <td style={{width: "10%"}}><DeleteButton callback={deleteButtonCallback} id={index} deleteMessage={"Delete Evaluation"}/></td>
                   </tr>
                 )) : <tr><td colSpan={10}>Please log in</td></tr>}
                 {auth ? (
@@ -333,7 +182,7 @@ const Home: NextPage = () => {
                   <td style={{width:"13%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+(current.citation*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
                   <td style={{width:"13%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+(current.coverage*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
                   <td style={{width:"13%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+(current.bias*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
-                  <td style={{width:"15%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+((current.decision+current.comparison+current.citation+current.coverage+current.bias)*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
+                  <td style={{width:"15%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+((sumAll(current))*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
                   <td style={{width:"15%", background: "#0E397A", color: "white", fontWeight: "750"}}></td>
 
                   </tr>
@@ -343,7 +192,7 @@ const Home: NextPage = () => {
               </table>
 
               <span className={styles.label}>Create Evaluation</span>
-              {auth ? <CreateForm callback={pushNewEvaluation} judge={judge || {_id: "", name: "", email: "", evaluations: []}}/> : <span className={styles.sublabel}>Login to create</span>}
+              {auth ? <CreateEvaluation callback={pushNewEvaluation} judge={judge || {_id: "", name: "", email: "", evaluations: []}}/> : <span className={styles.sublabel}>Login to create</span>}
             
             </div> : "Loading..."}
 

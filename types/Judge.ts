@@ -10,8 +10,8 @@ export type Judge = {
     name: string,
     email: string,
     evaluations: Evaluation[],
-    totalEarnedPoints: number,
-    totalPossiblePoints: number
+    totalEarnedPoints?: number,
+    totalPossiblePoints?: number
 };
 
 // methods
