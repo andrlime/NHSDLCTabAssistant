@@ -7,7 +7,8 @@ import styles from '../styles/Q.module.css';
 import stylesQ from '../styles/R.module.css';
 import type { Tool } from './typedeclarations';
 import axios from 'axios';
-import { ObjectId } from 'mongodb';
+import { Judge } from '../types/Judge';
+import { Evaluation } from '../types/Evaluation';
 
 const toolbox: Tool[] = [
   {id: 1, name: "Pairings Generator", description: "Generate pairings image from horizontal schematic", link: "/pair", active: false},
@@ -16,28 +17,6 @@ const toolbox: Tool[] = [
   {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
   {id: 99, name: "Evaluate Judges", description: "Judge evaluation system", link: "/evaluate", active: true},
 ];
-
-type Judge = {
-  _id: ObjectId | string,
-  name: string,
-  email: string,
-  evaluations: Evaluation[],
-  totalEarnedPoints: number,
-  totalPossiblePoints: number
-}
-
-type Evaluation = {
-  tournamentName: string,
-  roundName: string, // e.g., Round 1 Flight A etc.
-  isPrelim: boolean,
-  isImprovement: boolean,
-  decision: number,
-  comparison: number,
-  citation: number,
-  coverage: number,
-  bias: number,
-  weight: number
-}
 
 const CreateJudge: FunctionComponent<{callback: Function, addALot: Function}> = ({callback, addALot}) => {
   const [judgeName, setJudgeName] = useState("");
