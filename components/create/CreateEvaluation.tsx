@@ -2,7 +2,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { FunctionComponent, useState, useRef, useEffect } from "react";
 import { Judge } from "../../types/Judge";
-import styles from '../styles/Q.module.css';
+import styles from '../../styles/Q.module.css';
 
 export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Judge}> = ({callback, judge}) => {
     const [tournament, setTournament] = useState("");

@@ -1,5 +1,5 @@
 import { FunctionComponent, useState } from "react";
-import styles from '../styles/Q.module.css';
+import styles from '../../styles/Q.module.css';
 
 export const DeleteButton: FunctionComponent<{callback: Function, id: number | string, deleteMessage: string}> = ({callback, id, deleteMessage}) => {
   const [confirm, setConfirm] = useState(false);

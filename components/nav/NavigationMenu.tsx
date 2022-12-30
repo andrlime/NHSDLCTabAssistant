@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FunctionComponent, useState } from "react";
 import { NavigationItem } from "../../types/NavigationItem";
-import styles from '../styles/Q.module.css';
+import styles from '../../styles/Q.module.css';
 
 /** (1)
  * toolbox: NavigationItem[] = list of all navigation items
