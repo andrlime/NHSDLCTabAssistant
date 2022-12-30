@@ -1,3 +1,5 @@
+// deprecate this file as soon as ****ing possible
+
 import type { NextPage } from 'next';
 import React from 'react';
 
@@ -45,7 +47,7 @@ export type Tournament = {
     results?: Results
 }
 
-export type Tool = {
+export type Tool = { // the old version
     id: number,
     name: string,
     description: string,

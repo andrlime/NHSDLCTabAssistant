@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import React, { useEffect, useState, useRef, FunctionComponent, useCallback } from 'react';
+import React, { useEffect, useState, useRef, FunctionComponent } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import stylesQ from '../styles/R.module.css';
@@ -20,6 +20,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import DeleteButton from '../components/buttons/DeleteButton';
+import NavigationBar from '../components/nav/NavigationMenu';
 
 ChartJS.register(
   CategoryScale,
@@ -30,14 +32,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-const toolbox: Tool[] = [
-  {id: 1, name: "Pairings Generator", description: "Generate pairings image from horizontal schematic", link: "/pair", active: false},
-  {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: false},
-  {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: false},
-  {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
-  {id: 99, name: "Evaluate Judges", description: "Judge evaluation system", link: "/evaluate", active: true},
-];
 
 type Judge = {
   _id: ObjectId | string,
@@ -58,21 +52,6 @@ type Evaluation = {
   coverage: number,
   bias: number,
   weight: number
-}
-
-const DeleteButton: FunctionComponent<{callback: Function, id: number}> = ({callback, id}) => {
-  const [confirm, setConfirm] = useState(false);
-  return (<div className={styles.deleteElement}>
-
-    <button onClick={(e) => {
-      if (confirm) {
-        callback(id);
-      } else {
-        setConfirm(true);
-      }
-    }} style={{padding: "0.2rem"}}>{confirm ? "Confirm?" : "Delete Evaluation"}</button>
-
-  </div>);
 }
 
 const CreateForm: FunctionComponent<{callback: Function, judge: Judge}> = ({callback, judge}) => {
@@ -192,7 +171,6 @@ const CreateForm: FunctionComponent<{callback: Function, judge: Judge}> = ({call
 }
 
 const Home: NextPage = () => {
-  const [burger, setBurger] = useState(true);
   const backendUrl = useRef("");
   const apiKey = useRef("");
   const [judge, setJudge] = useState<Judge>();
@@ -205,16 +183,6 @@ const Home: NextPage = () => {
     j.evaluations.push(evaluation);
     setJudge(j);
   };
-
-  const navBar = (<div className={styles.navbar}>
-    <div className={burger ? styles.burger : styles.cross} onClick={_ => setBurger(!burger)}><span></span><span></span><span></span></div>
-    <div style={{padding: "1rem", color: "#0E397A"}}/>
-    {!burger ? (<div>
-      {toolbox.map(item => (
-        <Link key={item.id**5.1} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
-      ))}
-    </div>) : ""}
-  </div>);
 
   const { query } = useRouter();
   useEffect(() => {
@@ -295,7 +263,7 @@ const Home: NextPage = () => {
         <title>NHSDLC Judge Evaluation System</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
-      {navBar}
+      <NavigationBar pageIndex={4}/>
       <div className={styles.content}>
         <div className={styles.heading}><Link href="/evaluate"><span>&#9001;</span>&nbsp;&nbsp;&nbsp;</Link>Judge Evaluation System: Judge <span style={{textDecoration: "underline"}}>{loaded ? judge?.name : "Loading..."}</span></div>
         <div className={styles.form} style={{paddingLeft: "0rem", width: "100%"}}>
@@ -352,7 +320,7 @@ const Home: NextPage = () => {
                       // call API route to delete the judge from the database
                       axios.delete(`https://${backendUrl.current}/delete/evaluation/${apiKey.current}`, {data: {judgeid: query.judgeId, index: e}}).then((_) => {})
 
-                    }} id={index}/></td>
+                    }} id={index} deleteMessage={"Delete Evaluation"}/></td>
                   </tr>
                 )) : <tr><td colSpan={10}>Please log in</td></tr>}
                 {auth ? (

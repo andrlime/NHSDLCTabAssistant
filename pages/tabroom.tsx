@@ -5,6 +5,7 @@ import React, { FunctionComponent,  useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import type { Tool, Team, Speaker } from './typedeclarations';
+import NavigationBar from '../components/nav/NavigationMenu';
 
 const BreakTable: FunctionComponent<{teams: Array<Team>, division: string, topx: number}> = ({teams, division, topx}) => {
   return (
@@ -39,8 +40,6 @@ const toolbox: Tool[] = [
 ];
 
 const Home: NextPage = () => {
-  const [burger, setBurger] = useState(true);
-
   const readFile = async (file: any) => {
     if (!file) return
     const data = await file.text()
@@ -56,16 +55,6 @@ const Home: NextPage = () => {
         );
       }
   };
-
-  const navBar = (<div className={styles.navbar}>
-    <div className={burger ? styles.burger : styles.cross} onClick={_ => setBurger(!burger)}><span></span><span></span><span></span></div>
-    <div style={{padding: "1rem", color: "#0E397A"}}/>
-    {!burger ? (<div>
-      {toolbox.map((item, index) => (
-        <Link key={item.id**index*17} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
-      ))}
-    </div>) : ""}
-  </div>);
 
   const [nlFile, setNLFile] = useState();
   const [namelist, setNamelist] = useState("");
@@ -178,7 +167,7 @@ const Home: NextPage = () => {
         <title>NHSDLC Tabroom Tools - Rankings</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
-      {navBar}
+      <NavigationBar pageIndex={3}/>
       <div className={styles.content}>
         <div className={styles.heading}>Convert NHSDLC Namelist to Tabroom Import CSV</div>
         

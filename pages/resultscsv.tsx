@@ -5,19 +5,12 @@ import React, { useRef,  useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import type { Tool, Team, Speaker } from './typedeclarations';
+import NavigationBar from '../components/nav/NavigationMenu';
 
 type Division = {
   speakersInOrder: Speaker[],
   teamsInOrder: {team: any, label: string}[]
 }
-
-const toolbox: Tool[] = [
-  {id: 1, name: "Pairings Generator", description: "Generate pairings image from horizontal schematic", link: "/pair", active: false},
-  {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: false},
-  {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: true},
-  {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
-  {id: 99, name: "Evaluate Judges", description: "Judge evaluation system", link: "/evaluate", active: false}
-];
 
 const Home: NextPage = () => {
   const [divisions, setDivisions] = useState<Division>();
@@ -337,25 +330,13 @@ const Home: NextPage = () => {
     elem.remove()
   }
 
-  const [burger, setBurger] = useState(true);
-
-  const navBar = (<div className={styles.navbar}>
-    <div className={burger ? styles.burger : styles.cross} onClick={_ => setBurger(!burger)}><span></span><span></span><span></span></div>
-    <div style={{padding: "1rem", color: "#0E397A"}}/>
-    {!burger ? (<div>
-      {toolbox.map((item, index) => (
-        <Link key={item.id**index*14} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
-      ))}
-    </div>) : ""}
-  </div>);
-
   return (
     <div className={styles.everything}>
       <Head>
         <title>NHSDLC Tabroom Tools - Results</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
-      {navBar}
+      <NavigationBar pageIndex={2}/>
       <div className={styles.content}>
         <div className={styles.heading}>Generate Results Spreadsheets</div>
         
