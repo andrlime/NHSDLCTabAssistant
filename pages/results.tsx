@@ -1,68 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import React, { FunctionComponent,  useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import stylesQ from '../styles/R.module.css';
-import type { Tool, Team, Speaker } from './typedeclarations';
 import html2canvas from "html2canvas";
+import NavigationBar from '../components/nav/NavigationMenu';
+import Speaker from '../types/Speaker';
+import Team from '../types/Team';
+import { BreakTable } from '../components/other/BreakTable';
+import { SpeakerTable } from '../components/other/SpeakerTable';
 
-const BreakTable: FunctionComponent<{teams: Array<Team>, division: string, topx: number}> = ({teams, division, topx}) => {
-  return (
-    <>
-      {(teams.filter(e => {
-        if(division=="MS" || division=="Middle School") return e.division=="MS"||e.division=="Middle School"
-        else if(division=="Open"||division=="O") return e.division=="O"||e.division=="Open"
-        else if(division=="Novice"||division=="N") return e.division=="N"||e.division=="Novice"
-        else if(division=="V" || division=="Varsity") return e.division=="V"||e.division=="Varsity"
-      })).slice(0,topx).map((item, index) => (
-        <tr key={index} style={{height: "1rem"}}>
-          <td style={{width:"10%"}}>{index+1}</td><td style={{width:"10%"}}>{item.id}</td><td style={{width:"40%"}}>{item.speaker1.name_cn} - {item.speaker1.school}</td><td style={{width:"40%"}}>{item.speaker2.name_cn} - {item.speaker2.school}</td>
-        </tr>
-      ))}
-    </>
-  )
-}
-
-const SpeakerTable: FunctionComponent<{speakers: Array<Speaker>, division: string, topx: number}> = ({speakers, division, topx}) => {
-  return (
-    <>
-      {(speakers.filter(e => {
-        if(division=="MS" || division=="Middle School") return e.division=="MS"||e.division=="Middle School"
-        else if(division=="Open"||division=="O") return e.division=="O"||e.division=="Open"
-        else if(division=="Novice"||division=="N") return e.division=="N"||e.division=="Novice"
-        else if(division=="V" || division=="Varsity") return e.division=="V"||e.division=="Varsity"
-      })).slice(0,topx).map((item, index) => (
-        <tr key={index} style={{height: "1rem"}}>
-          <td style={{width:"10%"}}>{index+1}</td><td style={{width:"10%"}}>{item.id}</td><td style={{width:"40%"}}>{item.name_cn}</td><td style={{width:"40%"}}>{item.school}</td>
-        </tr>
-      ))}
-    </>
-  )
-}
-
-const toolbox: Tool[] = [
-  {id: 1, name: "Pairings Generator", description: "Generate pairings image from horizontal schematic", link: "/pair", active: false},
-  {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: true},
-  {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: false},
-  {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
-  {id: 99, name: "Evaluate Judges", description: "Judge evaluation system", link: "/evaluate", active: false}
-];
+// can be polished later but for now this is fine
 
 const Home: NextPage = () => {
-  const [burger, setBurger] = useState(true);
-
-  const navBar = (<div className={styles.navbar}>
-    <div className={burger ? styles.burger : styles.cross} onClick={_ => setBurger(!burger)}><span></span><span></span><span></span></div>
-    <div style={{padding: "1rem", color: "#0E397A"}}/>
-    {!burger ? (<div>
-      {toolbox.map((item, index) => (
-        <Link key={item.id**index*13} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
-      ))}
-    </div>) : ""}
-  </div>);
-
   const [fileOne, setFile1] = useState();
   const [fileTwo, setFile2] = useState();
   const [fileThree, setFile3] = useState();
@@ -236,7 +187,7 @@ const Home: NextPage = () => {
         <title>NHSDLC Tabroom Tools - Rankings</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
-      {navBar}
+      <NavigationBar pageIndex={1}/>
       <div className={styles.content}>
         <div className={styles.heading}>Generate Rankings</div>
         

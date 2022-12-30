@@ -1,26 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import React, { useRef,  useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
-import type { Tool, Team, Speaker } from './typedeclarations';
+import NavigationBar from '../components/nav/NavigationMenu';
+import Speaker from '../types/Speaker';
+import Team from '../types/Team';
+import LineSales from '../types/LineSales';
 
-type Division = {
-  speakersInOrder: Speaker[],
-  teamsInOrder: {team: any, label: string}[]
-}
-
-const toolbox: Tool[] = [
-  {id: 1, name: "Pairings Generator", description: "Generate pairings image from horizontal schematic", link: "/pair", active: false},
-  {id: 2, name: "Results Image Generator", description: "Generator results as an image", link: "/results", active: false},
-  {id: 3, name: "Results Spreadsheet Generator", description: "Generate results for a given division as a csv file", link: "/resultscsv", active: true},
-  {id: 10, name: "Tabroom Import Spreadsheet Convertor", description: "Convert DLC namelist to Tabroom format spreadsheet", link: "/tabroom", active: false},
-  {id: 99, name: "Evaluate Judges", description: "Judge evaluation system", link: "/evaluate", active: false}
-];
+// again, can be polished later
 
 const Home: NextPage = () => {
-  const [divisions, setDivisions] = useState<Division>();
+  const [divisions, setDivisions] = useState<{speakersInOrder: Speaker[], teamsInOrder: {team: any, label: string}[]}>();
   
   const [divisionOneFile, setD1File] = useState();
   const [divisionOneRawFile, setD1RFile] = useState();
@@ -147,29 +138,6 @@ const Home: NextPage = () => {
       console.log(spkListAAA, tmListAAA, teamsLines);
 
       spkListAAA = (spkListAAA.sort((a,b) => a.indivCode - b.indivCode)).slice(1); // this is now sorted
-
-      //actually do it
-      //format is
-      // 队伍编号 个人编号	分组	姓名 (汉字）	姓名的拼音	性别	电子邮件	联系电话	学校	年级	家长联系电话	Team Awards	Individual Award	Team rank	Prelim Wins	Prelim Losses	Speaker rank
-      type LineSales = {
-        teamCode: number, // get from team line D
-        indivCode: number, // get from team line, i.e. find speaker 1 and speaker 2 id, and then search the speaker list
-        division: string, // get from list items D
-        chineseName: string,
-        pinyinName: string,
-        gender: string,
-        email: string,
-        phone: string,
-        school: string,
-        gradeLevel: string,
-        parentPhone: string,
-        teamAwards: string, // get from team string D
-        indivAwards: string, // get from speakers string D
-        teamRank: number, // team string D
-        indivRank: number, // speakers string D
-        prelimWins: number, // count Ws and Rds in the speaker thingy D
-        prelimLosses: number // see above D
-      }; // type of a single line in the sheet
 
       let whichNamelistAmILookingAt = "";
       for(let tml of namelist) {
@@ -337,25 +305,13 @@ const Home: NextPage = () => {
     elem.remove()
   }
 
-  const [burger, setBurger] = useState(true);
-
-  const navBar = (<div className={styles.navbar}>
-    <div className={burger ? styles.burger : styles.cross} onClick={_ => setBurger(!burger)}><span></span><span></span><span></span></div>
-    <div style={{padding: "1rem", color: "#0E397A"}}/>
-    {!burger ? (<div>
-      {toolbox.map((item, index) => (
-        <Link key={item.id**index*14} href={item.link}><div className={styles.menuLabel} style={{backgroundColor: item.active ? "#ECC132" : "", color: item.active ? "black" : ""}}>{item.name}</div></Link>
-      ))}
-    </div>) : ""}
-  </div>);
-
   return (
     <div className={styles.everything}>
       <Head>
         <title>NHSDLC Tabroom Tools - Results</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
-      {navBar}
+      <NavigationBar pageIndex={2}/>
       <div className={styles.content}>
         <div className={styles.heading}>Generate Results Spreadsheets</div>
         
