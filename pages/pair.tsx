@@ -1,27 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import React, { FunctionComponent,  useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import stylesQ from '../styles/R.module.css';
-import type { Debate, Tool } from './typedeclarations';
 import html2canvas from "html2canvas";
 import NavigationBar from '../components/nav/NavigationMenu';
+import Debate from '../types/Debate';
+import { FlightTable } from '../components/other/FlightTable';
 
-type RoundProps = {rounds: Array<Debate>}
-
-const FlightTable: FunctionComponent<RoundProps> = ({rounds}) => {
-  return (
-    <>
-      {rounds.map((item, index) => (
-        <tr key={index} style={{height: "1rem"}}>
-          <td style={{width:"10%"}}>{item.flight}</td><td style={{width:"20%"}}>{item.teamA}</td><td style={{width:"20%"}}>{item.teamB}</td><td style={{width:"25%"}}>{item.roomCode}</td><td style={{width:"25%"}}>{item.judgeName}</td>
-        </tr>
-      ))}
-    </>
-  )
-}
 const Home: NextPage = () => {
   const [file, setFile] = useState();
   const [stTime, setStTime] = useState(0);

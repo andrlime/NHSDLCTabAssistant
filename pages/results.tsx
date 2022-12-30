@@ -1,47 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import React, { FunctionComponent,  useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import stylesQ from '../styles/R.module.css';
-import type { Tool, Team, Speaker } from './typedeclarations';
 import html2canvas from "html2canvas";
 import NavigationBar from '../components/nav/NavigationMenu';
+import Speaker from '../types/Speaker';
+import Team from '../types/Team';
+import { BreakTable } from '../components/other/BreakTable';
+import { SpeakerTable } from '../components/other/SpeakerTable';
 
-const BreakTable: FunctionComponent<{teams: Array<Team>, division: string, topx: number}> = ({teams, division, topx}) => {
-  return (
-    <>
-      {(teams.filter(e => {
-        if(division=="MS" || division=="Middle School") return e.division=="MS"||e.division=="Middle School"
-        else if(division=="Open"||division=="O") return e.division=="O"||e.division=="Open"
-        else if(division=="Novice"||division=="N") return e.division=="N"||e.division=="Novice"
-        else if(division=="V" || division=="Varsity") return e.division=="V"||e.division=="Varsity"
-      })).slice(0,topx).map((item, index) => (
-        <tr key={index} style={{height: "1rem"}}>
-          <td style={{width:"10%"}}>{index+1}</td><td style={{width:"10%"}}>{item.id}</td><td style={{width:"40%"}}>{item.speaker1.name_cn} - {item.speaker1.school}</td><td style={{width:"40%"}}>{item.speaker2.name_cn} - {item.speaker2.school}</td>
-        </tr>
-      ))}
-    </>
-  )
-}
-
-const SpeakerTable: FunctionComponent<{speakers: Array<Speaker>, division: string, topx: number}> = ({speakers, division, topx}) => {
-  return (
-    <>
-      {(speakers.filter(e => {
-        if(division=="MS" || division=="Middle School") return e.division=="MS"||e.division=="Middle School"
-        else if(division=="Open"||division=="O") return e.division=="O"||e.division=="Open"
-        else if(division=="Novice"||division=="N") return e.division=="N"||e.division=="Novice"
-        else if(division=="V" || division=="Varsity") return e.division=="V"||e.division=="Varsity"
-      })).slice(0,topx).map((item, index) => (
-        <tr key={index} style={{height: "1rem"}}>
-          <td style={{width:"10%"}}>{index+1}</td><td style={{width:"10%"}}>{item.id}</td><td style={{width:"40%"}}>{item.name_cn}</td><td style={{width:"40%"}}>{item.school}</td>
-        </tr>
-      ))}
-    </>
-  )
-}
+// can be polished later but for now this is fine
 
 const Home: NextPage = () => {
   const [fileOne, setFile1] = useState();
