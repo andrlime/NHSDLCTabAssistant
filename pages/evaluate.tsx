@@ -1,154 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import React, { useEffect, useState, useRef, FunctionComponent } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import stylesQ from '../styles/R.module.css';
 import axios from 'axios';
-import { Judge } from '../types/Judge';
+import { computeStdev, computeMean, computeZ, Judge } from '../types/Judge';
 import NavigationBar from '../components/nav/NavigationMenu';
-
-const CreateJudge: FunctionComponent<{callback: Function, addALot: Function}> = ({callback, addALot}) => {
-  const [judgeName, setJudgeName] = useState("");
-  const [judgeEmail, setJudgeEmail] = useState("");
-  const backendUrl = useRef("");
-  const apiKey = useRef("");
-
-  useEffect(() => {
-    // get the total weight of all rounds
-    axios.get("/api/getkey").then((res)=> {
-      backendUrl.current = res.data.backendUrl || "";
-      apiKey.current = res.data.apiKey || "";
-    });
-  },[]);
-
-  return (<div className={styles.sublabel} style={{paddingLeft: "0rem", flexDirection: "column"}}>
-
-    <div className={styles.createform}>
-      <div style={{margin: "0.15rem"}}>Judge Name: <input value={judgeName} onChange={(e) => setJudgeName(e.target.value)} type={'text'} style={{width: "100%"}}></input></div>
-      <div style={{margin: "0.15rem"}}>Judge Email: <input value={judgeEmail} onChange={(e) => setJudgeEmail(e.target.value)} type={'text'} style={{width: "100%", borderColor: !judgeEmail.match(/((\w|[-]|[.])+[@]\w+([.]\w+)+)/g) ? "red" : ""}}></input></div>
-    </div>
-    <div className={styles.createform} style={{flexDirection: "column"}}>
-      <button style={{width: "fit-content"}} onClick={(_) => {
-        let body = {
-          apikey: apiKey.current,
-          name: judgeName,
-          email: judgeEmail
-        };
-
-        if ( !judgeEmail.match((/((\w|[-]|[.])+[@]\w+([.]\w+)+)/g)) ) return;
-
-        else {
-          axios.post(`https://${backendUrl.current}/create/judge`, body).then((res) => {
-            callback({
-              _id: res.data.result.insertedId,
-              name: judgeName,
-              email: judgeEmail,
-              evaluations: [],
-              totalEarnedPoints: 0,
-              totalPossiblePoints: 1
-            });
-          })
-        }
-      }}>Create Judge</button>
-
-      <FileUploadArea addJudge={(listOfJudgesToAdd: Judge[]) => {
-        addALot(listOfJudgesToAdd);
-      }}/>
-    </div>
-
-  </div>);
-}
-
-const DeleteButton: FunctionComponent<{callback: Function, id: string}> = ({callback, id}) => {
-  const [confirm, setConfirm] = useState(false);
-  return (<div className={styles.deleteElement}>
-
-    <button onClick={(e) => {
-      if (confirm) {
-        callback(id);
-      } else {
-        setConfirm(true);
-      }
-    }} style={{padding: "0.2rem"}}>{confirm ? "Confirm?" : "Delete Judge"}</button>
-
-  </div>);
-}
-
-const FileUploadArea: FunctionComponent<{addJudge: Function}> = ({addJudge}) => {
-  const [file, setFile] = useState();
-
-  const processFile = (input: any) => {
-    setFile(input);
-    handleOnSubmit(input);
-  }
-
-  const processInput = (csvInput: string) => {
-    // need to write!
-    // format is name, email\n $name, $email
-    let lines = (csvInput.match(/.+/g) || ["FAILED"])
-    if(lines[0]=="FAILED") return;
-   
-    let allJudgesArray: Array<Judge> = [];
-    let judges = lines.slice(1);
-    for(let line of judges) {
-      if(line.indexOf(",")==-1) return;
-      let data = line.split(",");
-      let name = data[0];
-      let email = data[1];
-      let rx = /((\w|[-]|[.])+[@]\w+([.]\w+)+)/g; //tests if it's an email
-      if(!email.match(rx)) continue; // not a valid email
-
-      allJudgesArray.push({_id: "REFRESH TO SEE", name: name, email: email, evaluations: [], totalEarnedPoints: 0, totalPossiblePoints: 0});
-    }
-    addJudge(allJudgesArray);
-  }
-
-  const readFile = async (file: any) => {
-    if (!file) return;
-    const data = await file.text();
-    return data;
-  }
-
-  const handleOnSubmit = (input: any) => {
-      readFile(input).then((e) => {
-          processInput(e);
-        }
-      );
-  };
-
-  const downloadSample = () => {
-    let data = "name,email\n";
-    data = 'data:text/csv;charset=utf-8,' + encodeURI(data);
-    let fileName = `judge_template.csv`;
-    saveAs(data, fileName)
-  }
-
-  const saveAs = (blob: any, fileName: string) =>{
-    let elem = window.document.createElement('a');
-    elem.href = blob
-    elem.download = fileName;
-    (document.body || document.documentElement).appendChild(elem);
-    if (typeof elem.click === 'function') {
-      elem.click();
-    } else {
-      elem.target = '_blank';
-      elem.dispatchEvent(new MouseEvent('click', {
-        view: window,
-        bubbles: true,
-        cancelable: true
-      }));
-    }
-    URL.revokeObjectURL(elem.href);
-    elem.remove()
-  }
-
-  return (<div>
-    <div>Upload Judges from File: <input onChange={(e: any) => processFile(e.target.files[0])} accept={".csv"} type={'file'}></input></div>
-    <div>Download Template: <button onClick={(_) => downloadSample()}>Download</button></div>
-  </div>)
-}
+import DeleteButton from '../components/buttons/DeleteButton';
+import { CreateJudge } from '../components/create/CreateJudge';
 
 const Home: NextPage = () => {
   const [judges, setJudges] = useState<Array<Judge>>([]);
@@ -194,74 +55,47 @@ const Home: NextPage = () => {
     })
   },[]);
 
-  const computeStdev = (judge: Judge): number => {
-    const partialList = [];
-    for(const i of judge.evaluations) {
-        partialList.push(i.bias+i.citation+i.comparison+i.coverage+i.decision);
+  const sortTable = (sortColumnIndex: number, sortFunction: Function, array?: any[]) => {
+    if(!array) {
+      setSortColumn(sortColumnIndex);
+      setIsAsc(!isAscending);
+      let sortedList = judges.sort((a,b) => (sortFunction(a)-sortFunction(b)) * multiplierAsc);
+      setJudges(sortedList);
+    } else {
+      setSortColumn(sortColumnIndex);
+      setIsAsc(!isAscending);
+      setJudges(array);
     }
-
-    // compute stdev of that list
-    const sumOfList = partialList.reduce((accum, current) => accum+current, 0);
-    const mean = sumOfList/partialList.length;
-
-    const sumOfVariances = partialList.reduce((accum, current) => accum+((current-mean)**2), 0);
-    return (sumOfVariances/(partialList.length-1))**(0.5);
+  }
+  
+  const deleteButtonCallback = (e: string) => {
+    setJudges(judges.filter((a) => a._id.toString()!=e));
+    // call API route to delete the judge from the database
+    axios.delete(`https://${backendUrl.current}/delete/judge/${apiKey.current}`, {data: {judgeid: e}}).then((_) => {})
   }
 
-  const computeZ = (judge: Judge): number => {
-    // total weighted score of all judges and stdev
-    let wsum = 0;
-    let wtotal = 0;
-    let numberOfEvaluations = 0;
-    for(let j of judges) {
-      for(let ev of j.evaluations) {
-        wsum+=(ev.bias+ev.citation+ev.comparison+ev.coverage+ev.decision)*ev.weight;
-        wtotal+=ev.weight;
-        numberOfEvaluations++;
-      }
+  const addOneJudgeCallback = (judge: Judge) => {
+    let j = judges.filter((_) => true);
+    j.push(judge);
+    setJudges(j);
+  }
+
+  const addALotCallback = (J: Judge[]) => {
+    let j = judges.filter((_) => true);
+    for(let ju of J) {
+      j.push(ju);
+      let body = {
+        apikey: apiKey.current,
+        name: ju.name,
+        email: ju.email
+      };
+      axios.post(`https://${backendUrl.current}/create/judge`, body).then((_) => {})
     }
-
-    const W_AVG_ALLJUDGES = wsum/wtotal;
-
-    //// stdev, all judges
-    let variance = judges.reduce((accum, current) => accum+current.evaluations.reduce((a, c) => a+((c.bias+c.citation+c.comparison+c.coverage+c.decision-W_AVG_ALLJUDGES)**2), 0), 0)
-    const SD_ALLJUDGES = (variance/numberOfEvaluations)**0.5;
-
-    // total weighted score of just this judge and stdev
-    wsum = 0;
-    wtotal = 0;
-    numberOfEvaluations = 0;
-    for(let ev of judge.evaluations) {
-      wsum+=(ev.bias+ev.citation+ev.comparison+ev.coverage+ev.decision)*ev.weight;
-      wtotal+=ev.weight;
-      numberOfEvaluations++;
-    }
-    const W_AVG_JUST_THIS_JUDGE = wsum/wtotal;
-    
-    variance = judge.evaluations.reduce((a, c) => a+((c.bias+c.citation+c.comparison+c.coverage+c.decision-W_AVG_ALLJUDGES)**2), 0);
-    const SD_JUST_THIS_JUDGE = (variance/numberOfEvaluations)**0.5;
-
-    // if you can read all of that without blinking, you deserve a raise
-    // find the z score
-    let z = (W_AVG_ALLJUDGES-W_AVG_JUST_THIS_JUDGE)/((((SD_ALLJUDGES**2)/(judges.length)) + ((SD_JUST_THIS_JUDGE**2)/(judge.evaluations.length)))**(0.5));
-    return -1*z;
+    setJudges(j);
   }
 
   const ascSymb = isAscending ? <>&uarr;</> : <>&darr;</>;
   let multiplierAsc = (isAscending ? 1 : -1);
-
-  const computeMean = (j: Judge): number => {
-    let wsum = 0;
-    let wtotal = 0;
-
-    for(let ev of j.evaluations) {
-      wsum+=(ev.bias+ev.citation+ev.comparison+ev.coverage+ev.decision)*ev.weight;
-      wtotal+=ev.weight;
-    }
-
-    return wsum/wtotal
-  }
-
   return (
     <div className={styles.everything}>
       <Head>
@@ -278,6 +112,7 @@ const Home: NextPage = () => {
             
             {auth ? <span>Logged in</span> : (<><input placeholder='username' value={username} onChange={(e)=>setUser(e.target.value)} type={'text'} style={{border: gotPwWrong ? `2px solid red` : "",width: "25%", minWidth: "200px", padding: "0.2rem", margin: "0.25rem"}}></input>
             <input placeholder='password' value={password} onChange={(e)=>setPass(e.target.value)} type={'password'} style={{border: gotPwWrong ? `2px solid red` : "", width: "25%", minWidth: "200px", padding: "0.2rem", margin: "0.25rem"}}></input></>)}
+            
             {auth ? "" : <button onClick={(e) => {
               let userpass = `U1A${username}P28${password}`;
               axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
@@ -290,6 +125,7 @@ const Home: NextPage = () => {
                 }
               })
             }}>Login</button>}
+
           </div>
 
           <div className={stylesQ.tables} style={{width: "50%"}}>
@@ -297,33 +133,14 @@ const Home: NextPage = () => {
             <tbody>
             <tr style={{height: "1rem"}}>
               <td style={{width:"15%"}}>Judge ID</td>
-              <td style={{width:"10%"}} onClick={e=>{
-                setSortColumn(1);
-                setIsAsc(!isAscending);
-                let sortedList = judges.sort((a,b) => a.name.localeCompare(b.name) * multiplierAsc);
-                setJudges(sortedList);
-              }}>Judge Name <span>{sortColumn == 1 ? ascSymb : <>&#124;</>}</span></td>
+              <td style={{width:"10%"}} onClick={(_)=>sortTable(1, (_: any)=>{}, judges.sort((a,b) => a.name.localeCompare(b.name) * multiplierAsc))}>Judge Name <span>{sortColumn == 1 ? ascSymb : <>&#124;</>}</span></td>
               <td style={{width:"15%"}}>Email</td>
-              <td style={{width:"20%"}} onClick={e=>{
-                setSortColumn(3);
-                setIsAsc(!isAscending);
-                let sortedList = judges.sort((a,b) => (computeMean(a)-computeMean(b)) * multiplierAsc);
-                setJudges(sortedList);
-              }}>Average Rating <span>{sortColumn == 3 ? ascSymb : <>&#124;</>}</span></td>
-              <td style={{width:"20%"}} onClick={e=>{
-                setSortColumn(4);
-                setIsAsc(!isAscending);
-                let sortedList = judges.sort((a,b) => (computeStdev(a)-computeStdev(b)) * multiplierAsc);
-                setJudges(sortedList);
-              }}>Stdev of Rating <span>{sortColumn == 4 ? ascSymb : <>&#124;</>}</span></td>
-              <td colSpan={2} style={{width:"20%"}} onClick={e=>{
-                setSortColumn(5);
-                setIsAsc(!isAscending);
-                let sortedList = judges.sort((a,b) => (computeZ(a)-computeZ(b)) * multiplierAsc);
-                setJudges(sortedList);
-              }}>Z-Score of Rating <span>{sortColumn == 5 ? ascSymb : <>&#124;</>}</span></td>
+              <td style={{width:"20%"}} onClick={(_) => sortTable(3, computeMean)}>Average Rating <span>{sortColumn == 3 ? ascSymb : <>&#124;</>}</span></td>
+              <td style={{width:"20%"}} onClick={(_) => sortTable(4, computeStdev)}>Stdev of Rating <span>{sortColumn == 4 ? ascSymb : <>&#124;</>}</span></td>
+              <td colSpan={2} style={{width:"20%"}} onClick={(_) => sortTable(5, computeZ)}>Z-Score of Rating <span>{sortColumn == 5 ? ascSymb : <>&#124;</>}</span></td>
               <td style={{backgroundColor: "#b81818"}}>Delete</td>
             </tr>
+
             {auth ? (judges.filter(element => element.email.toLowerCase().includes(filter) || element.name.toLowerCase().includes(filter))).map(element=>(
               <tr key={element._id.toString()}>
                 <td>{element._id.toString()}</td>
@@ -331,36 +148,15 @@ const Home: NextPage = () => {
                 <td>{element.email}</td>
                 <td>{Math.round( 1000 * computeMean(element) ) / 1000}</td>
                 <td>{Math.round( 1000 * computeStdev(element) ) / 1000}</td>
-                <td>{Math.round( 1000 * computeZ(element) )/1000}</td>
+                <td>{Math.round( 1000 * computeZ(element, judges) )/1000}</td>
                 <Link href={element._id!="REFRESH TO SEE" ? `/judge?judgeId=${element._id}&user=${username}&pass=${password}` : ''} as={'/judge'}><td id={styles.customrow} style={{width: "10%", padding: "0.3rem"}}>&rarr;</td></Link>
-                <td style={{width: "10%"}}><DeleteButton callback={(e: string) => {
-                  setJudges(judges.filter((a) => a._id.toString()!=e));
-                  // call API route to delete the judge from the database
-                  axios.delete(`https://${backendUrl.current}/delete/judge/${apiKey.current}`, {data: {judgeid: element._id.toString()}}).then((_) => {})
-
-                }} id={element._id.toString()}/></td>
+                <td style={{width: "10%"}}><DeleteButton callback={deleteButtonCallback} id={element._id.toString()} deleteMessage={"Delete Judge"}/></td>
               </tr>
             )) : <tr><td colSpan={8}>Please log in</td></tr>}
             </tbody>
           </table>) : error}
 
-          {auth ? <CreateJudge callback={(judge: Judge) => {
-            let j = judges.filter((_) => true);
-            j.push(judge);
-            setJudges(j);
-          }} addALot={(J: Judge[]) => {
-            let j = judges.filter((_) => true);
-            for(let ju of J) {
-              j.push(ju);
-              let body = {
-                apikey: apiKey.current,
-                name: ju.name,
-                email: ju.email
-              };
-              axios.post(`https://${backendUrl.current}/create/judge`, body).then((_) => {})
-            }
-            setJudges(j);
-          }}/> : ""}
+          {auth ? <CreateJudge callback={addOneJudgeCallback} addALot={addALotCallback}/> : ""}
 
         </div>
         </div>
