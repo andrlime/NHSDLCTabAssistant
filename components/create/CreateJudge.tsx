@@ -44,9 +44,7 @@ export const CreateJudge: FunctionComponent<{callback: Function, addALot: Functi
                 _id: res.data.result.insertedId,
                 name: judgeName,
                 email: judgeEmail,
-                evaluations: [],
-                totalEarnedPoints: 0,
-                totalPossiblePoints: 1
+                evaluations: []
               });
             })
           }

@@ -220,21 +220,7 @@ $verylight: #ffffff;
             transition: 350ms all ease-in-out;
         }
 
-        input[type=text] {
-            background-color: $verylight;
-            padding: 0.5rem;
-            border-radius: 2rem;
-            border: 1px solid $dark;
-        }
-
-        input[type=password] {
-            background-color: $verylight;
-            padding: 0.5rem;
-            border-radius: 2rem;
-            border: 1px solid $dark;
-        }
-
-        input[type=number] {
+        input[type=text], input[type=password], input[type=number], select {
             background-color: $verylight;
             padding: 0.5rem;
             border-radius: 2rem;

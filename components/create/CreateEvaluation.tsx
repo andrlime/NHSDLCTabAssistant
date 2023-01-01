@@ -6,16 +6,16 @@ import styles from '../../styles/Q.module.css';
 
 export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Judge}> = ({callback, judge}) => {
     const [tournament, setTournament] = useState("");
-    const [round, setRound] = useState("");
+    const [round, setRound] = useState("Round 1");
+    const [flight, setFlight] = useState("A");
   
-    const [dec, setDec] = useState(0.0);
-    const [comp, setComp] = useState(0.0);
-    const [cit, setCit] = useState(0.0);
-    const [cov, setCov] = useState(0.0);
-    const [bias, setBias] = useState(0.0);
+    const [dec, setDec] = useState(0);
+    const [comp, setComp] = useState(0);
+    const [cit, setCit] = useState(0);
+    const [cov, setCov] = useState(0);
+    const [bias, setBias] = useState(0);
   
     const [improvement, setImprovement] = useState(false);
-    const [prelim, setPrelim] = useState(true);
   
     const backendUrl = useRef("");
     const apiKey = useRef("");
@@ -58,7 +58,26 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
   
       <div className={styles.createform}>
         <div style={{margin: "0.15rem"}}>Tournament Name: <input value={tournament} onChange={(e) => setTournament(e.target.value)} type={'text'} style={{width: "100%"}}></input></div>
-        <div style={{margin: "0.15rem"}}>Round Name: <input value={round} onChange={(e) => setRound(e.target.value)} type={'text'} style={{width: "100%"}}></input></div>
+        
+        <div style={{margin: "0.15rem"}}>Round Name: <select disabled={improvement} value={round} onChange={(e) => {setRound(e.target.value)}} style={{width: "100%"}}>
+          <option value={"Round 1"}>Round 1</option>
+          <option value={"Round 2"}>Round 2</option>
+          <option value={"Round 3"}>Round 3</option>
+          <option value={"Round 4"}>Round 4</option>
+          <option value={"Round 5"}>Round 5</option>
+          <option value={"Round 6"}>Round 6</option>
+          <option value={"Triple Octofinals"}>Triple Octofinals</option>
+          <option value={"Double Octofinals"}>Double Octofinals</option>
+          <option value={"Octofinals"}>Octofinals</option>
+          <option value={"Quarterfinals"}>Quarterfinals</option>
+          <option value={"Semifinals"}>Semifinals</option>
+          <option value={"Grand Finals"}>Grand Finals</option>
+          </select></div>
+        <div style={{margin: "0.15rem"}}>Flight: <select disabled={improvement}  value={flight} onChange={(e) => {setFlight(e.target.value)}} style={{width: "100%"}}>
+          <option value={"A"}>A</option>
+          <option value={"B"}>B</option>
+          </select></div>
+        
       </div>
       <div className={styles.createform}>
         <div style={{margin: "0.15rem"}}>Decision Score: <input value={dec} onChange={(e) => {
@@ -96,16 +115,18 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
           else setBias(number);
         }} type={'number'}></input></div>
       </div>
+
       <div className={styles.createform}>
         <div style={{marginRight: "0.5rem", whiteSpace: "nowrap"}}>Check if this is an improvement or sample round<input checked={improvement} onChange={(_) => setImprovement(!improvement)} type={'checkbox'}/></div>
-        <div style={{marginRight: "0.5rem", whiteSpace: "nowrap"}}>Check if this is a prelims round<input checked={prelim} onChange={(_) => setPrelim(!prelim)} type={'checkbox'}/></div>
+        <div style={{marginRight: "0.5rem", whiteSpace: "nowrap"}}>This box will auto check if the round is a prelims round<input checked={round.indexOf("Round")!=-1&&!improvement} type={'checkbox'}/></div>
       </div>
+
       <div className={styles.createform}>
         <button onClick={(_) => {
           let body = {
             tName: tournament,
-            rName: round, // e.g., Round 1 Flight A etc.
-            isPrelim: prelim,
+            rName: improvement ? "Improvement Round" : `${round} Flight ${flight}`, // e.g., Round 1 Flight A etc.
+            isPrelim: round.indexOf("Round")!=-1&&!improvement,
             isImprovement: improvement,
             decision: dec,
             comparison: comp,
@@ -119,8 +140,8 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
           callback({
             tournamentName: tournament,
             date: "",
-            roundName: round, // e.g., Round 1 Flight A etc.
-            isPrelim: prelim,
+            roundName: improvement ? "Improvement Round" : `${round} Flight ${flight}`, // e.g., Round 1 Flight A etc.
+            isPrelim: round.indexOf("Round")!=-1&&!improvement,
             isImprovement: improvement,
             decision: dec,
             comparison: comp,

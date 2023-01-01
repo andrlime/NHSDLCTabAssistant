@@ -11,8 +11,9 @@ import DeleteButton from '../components/buttons/DeleteButton';
 import NavigationBar from '../components/nav/NavigationMenu';
 import { LineGraph } from '../components/other/LineGraph';
 import { Evaluation } from '../types/Evaluation';
-import { Judge } from '../types/Judge';
+import { computeMean, Judge } from '../types/Judge';
 import { CreateEvaluation } from '../components/create/CreateEvaluation';
+import { computeMeanBias, computeMeanCoverage, computeMeanCitation, computeMeanComparison, computeMeanDecision } from '../types/Judge';
 
 const Home: NextPage = () => {
   const backendUrl = useRef("");
@@ -121,6 +122,8 @@ const Home: NextPage = () => {
 
   }
 
+  const rowCss = {background: "#0E397A", color: "white", fontWeight: "750"};
+
   return (
     <div className={styles.everything}>
       <Head>
@@ -175,15 +178,15 @@ const Home: NextPage = () => {
                 {auth ? (
                   <tr>
 
-                  <td colSpan={3} style={{width:"20%", background: "#0E397A", color: "white", fontWeight: "750"}}></td>
+                  <td colSpan={3} style={rowCss}></td>
 
-                  <td style={{width:"13%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*((judge?.evaluations.reduce((accum, current) => accum+(current.decision*current.weight), 0))||0)/(totalWeight(judge!)))/100}</td>
-                  <td style={{width:"13%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+(current.comparison*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
-                  <td style={{width:"13%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+(current.citation*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
-                  <td style={{width:"13%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+(current.coverage*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
-                  <td style={{width:"13%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+(current.bias*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
-                  <td style={{width:"15%", background: "#0E397A", color: "white", fontWeight: "750"}}>{Math.round(100*(judge?.evaluations.reduce((accum, current) => accum+((sumAll(current))*current.weight), 0)||0)/(totalWeight(judge!)))/100}</td>
-                  <td style={{width:"15%", background: "#0E397A", color: "white", fontWeight: "750"}}></td>
+                  <td style={rowCss}>{Math.round(100*computeMeanDecision(judge!))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanComparison(judge!))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanCitation(judge!))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanCoverage(judge!))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanBias(judge!))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMean(judge!))/100}</td>
+                  <td style={rowCss}></td>
 
                   </tr>
                 ) : ""}

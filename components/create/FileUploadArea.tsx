@@ -22,7 +22,7 @@ export const FileUploadArea: FunctionComponent<{addJudge: Function}> = ({addJudg
         let rx = /((\w|[-]|[.])+[@]\w+([.]\w+)+)/g; //tests if it's an email
         if(!email.match(rx)) continue; // not a valid email
   
-        allJudgesArray.push({_id: "REFRESH TO SEE", name: name, email: email, evaluations: [], totalEarnedPoints: 0, totalPossiblePoints: 0});
+        allJudgesArray.push({_id: "REFRESH TO SEE", name: name, email: email, evaluations: []});
       }
       addJudge(allJudgesArray);
     }
@@ -34,10 +34,11 @@ export const FileUploadArea: FunctionComponent<{addJudge: Function}> = ({addJudg
     }
   
     const handleOnSubmit = (input: any) => {
-        readFile(input).then((e) => {
-            processInput(e);
-          }
-        );
+      if(!input) return;
+      readFile(input).then((e) => {
+          processInput(e);
+        }
+      );
     };
   
     const downloadSample = () => {

@@ -9,9 +9,7 @@ export type Judge = {
     _id: ObjectId | string,
     name: string,
     email: string,
-    evaluations: Evaluation[],
-    totalEarnedPoints?: number,
-    totalPossiblePoints?: number
+    evaluations: Evaluation[]
 };
 
 // methods
@@ -74,6 +72,66 @@ export const computeMean = (j: Judge): number => {
 
     for (let ev of j.evaluations) {
         wsum += (ev.bias + ev.citation + ev.comparison + ev.coverage + ev.decision) * ev.weight;
+        wtotal += ev.weight;
+    }
+
+    return wsum / wtotal
+}
+
+export const computeMeanDecision = (j: Judge): number => {
+    let wsum = 0;
+    let wtotal = 0;
+
+    for (let ev of j.evaluations) {
+        wsum += (ev.decision) * ev.weight;
+        wtotal += ev.weight;
+    }
+
+    return wsum / wtotal
+}
+
+export const computeMeanCoverage = (j: Judge): number => {
+    let wsum = 0;
+    let wtotal = 0;
+
+    for (let ev of j.evaluations) {
+        wsum += (ev.coverage) * ev.weight;
+        wtotal += ev.weight;
+    }
+
+    return wsum / wtotal
+}
+
+export const computeMeanCitation = (j: Judge): number => {
+    let wsum = 0;
+    let wtotal = 0;
+
+    for (let ev of j.evaluations) {
+        wsum += (ev.citation) * ev.weight;
+        wtotal += ev.weight;
+    }
+
+    return wsum / wtotal
+}
+
+export const computeMeanComparison = (j: Judge): number => {
+    let wsum = 0;
+    let wtotal = 0;
+
+    for (let ev of j.evaluations) {
+        wsum += (ev.comparison) * ev.weight;
+        wtotal += ev.weight;
+    }
+
+    return wsum / wtotal
+}
+
+export const computeMeanBias = (j: Judge): number => {
+    let wsum = 0;
+    let wtotal = 0;
+
+    for (let ev of j.evaluations) {
+        wsum += (ev.bias) * ev.weight;
         wtotal += ev.weight;
     }
 
