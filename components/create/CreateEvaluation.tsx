@@ -19,12 +19,28 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
   
     const backendUrl = useRef("");
     const apiKey = useRef("");
+
+    const storeTournamentNameInCookies = (tournamentName: string) => {
+      if(tournamentName=="") return;
+      else {
+        localStorage.setItem('tname', tournamentName);
+      }
+    }
+  
+    const readTournamentNameFromCookies = () => {
+      if(localStorage.tname) {
+        setTournament(localStorage.tname);
+      } else {
+        setTournament("");
+      }
+    }
   
     useEffect(() => {
       axios.get("/api/getkey").then((res)=> {
         backendUrl.current = res.data.backendUrl || "";
         apiKey.current = res.data.apiKey || "";
       });
+      readTournamentNameFromCookies();
     },[]);
   
     const { query } = useRouter();
@@ -81,7 +97,7 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
         }} type={'number'}></input></div>
       </div>
       <div className={styles.createform}>
-        <div style={{marginRight: "0.5rem", whiteSpace: "nowrap"}}>Check if this is an improvement round<input checked={improvement} onChange={(_) => setImprovement(!improvement)} type={'checkbox'}/></div>
+        <div style={{marginRight: "0.5rem", whiteSpace: "nowrap"}}>Check if this is an improvement or sample round<input checked={improvement} onChange={(_) => setImprovement(!improvement)} type={'checkbox'}/></div>
         <div style={{marginRight: "0.5rem", whiteSpace: "nowrap"}}>Check if this is a prelims round<input checked={prelim} onChange={(_) => setPrelim(!prelim)} type={'checkbox'}/></div>
       </div>
       <div className={styles.createform}>
@@ -113,6 +129,8 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
             bias: bias,
             weight: improvement ? totalWeight(judge)*0.25 : 1,
           });
+
+          storeTournamentNameInCookies(tournament);
           axios.post(`https://${backendUrl.current}/update/judge/${apiKey.current}/${query.judgeId}`, body).then((_) => {})
         }}>Create Evaluation</button>
       </div>

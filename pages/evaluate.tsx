@@ -132,7 +132,6 @@ const Home: NextPage = () => {
           {!hasError ? (<table cellSpacing="0" cellPadding="0" className={stylesQ.table} id={stylesQ.one}>
             <tbody>
             <tr style={{height: "1rem"}}>
-              <td style={{width:"15%"}}>Judge ID</td>
               <td style={{width:"10%"}} onClick={(_)=>sortTable(1, (_: any)=>{}, judges.sort((a,b) => a.name.localeCompare(b.name) * multiplierAsc))}>Judge Name <span>{sortColumn == 1 ? ascSymb : <>&#124;</>}</span></td>
               <td style={{width:"15%"}}>Email</td>
               <td style={{width:"20%"}} onClick={(_) => sortTable(3, computeMean)}>Average Rating <span>{sortColumn == 3 ? ascSymb : <>&#124;</>}</span></td>
@@ -143,7 +142,6 @@ const Home: NextPage = () => {
 
             {auth ? (judges.filter(element => element.email.toLowerCase().includes(filter) || element.name.toLowerCase().includes(filter))).map(element=>(
               <tr key={element._id.toString()}>
-                <td>{element._id.toString()}</td>
                 <td>{element.name}</td>
                 <td>{element.email}</td>
                 <td>{Math.round( 1000 * computeMean(element) ) / 1000}</td>
@@ -152,7 +150,7 @@ const Home: NextPage = () => {
                 <Link href={element._id!="REFRESH TO SEE" ? `/judge?judgeId=${element._id}&user=${username}&pass=${password}` : ''} as={'/judge'}><td id={styles.customrow} style={{width: "10%", padding: "0.3rem"}}>&rarr;</td></Link>
                 <td style={{width: "10%"}}><DeleteButton callback={deleteButtonCallback} id={element._id.toString()} deleteMessage={"Delete Judge"}/></td>
               </tr>
-            )) : <tr><td colSpan={8}>Please log in</td></tr>}
+            )) : <tr><td colSpan={7}>Please log in</td></tr>}
             </tbody>
           </table>) : error}
 

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next';
-import React, { FunctionComponent,  useState } from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import NavigationBar from '../components/nav/NavigationMenu';

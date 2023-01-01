@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import React, { useEffect, useState, useRef, FunctionComponent } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Q.module.css';
 import stylesQ from '../styles/R.module.css';
