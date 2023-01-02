@@ -20,12 +20,14 @@ const Home: NextPage = () => {
   const apiKey = useRef("");
   const [judge, setJudge] = useState<Judge>();
   const [loaded, setLoaded] = useState(false);
+  const [filter, setFilter] = useState<Array<string>>([]); // four most recent tournaments
 
   const [auth, setAuth] = useState(false);
 
   const pushNewEvaluation = (evaluation: Evaluation) => {
     let j = {_id: judge!._id, name: judge?.name || "", email: judge?.email || "", evaluations: judge?.evaluations || []};
-    j.evaluations.push(evaluation);
+    j.evaluations = [evaluation, ...j.evaluations]
+    setFilter(findFourMostRecents(j));
     setJudge(j);
   };
 
@@ -36,7 +38,10 @@ const Home: NextPage = () => {
       apiKey.current = res.data.apiKey || "";
       // replace later
       axios.get(`https://${backendUrl.current}/get/judge/${apiKey.current}/${query.judgeId || ""}`).then((res) => {
-        setJudge(res.data.result);
+        let j = (res.data.result);
+        j.evaluations = j.evaluations.sort((a: Evaluation, b: Evaluation) => (new Date(a.date).toString()) < (new Date(b.date).toString()) ? 1 : -1)
+        setJudge(j);
+        setFilter(findFourMostRecents(j));
         setLoaded(true);
       });
       if(localStorage.us && localStorage.pw) {
@@ -60,6 +65,25 @@ const Home: NextPage = () => {
       }
     });
   },[query.judgeId, query.user, query.pass]);
+
+  const findFourMostRecents = (j: Judge) => {
+    // this assues the judge is sorted as it should be in the axios response
+    let strings: string[] = [];
+    let count = 0;
+    const AMOUNT_I_WANT = 4;
+    for(let ev of j.evaluations) {
+      if(strings.includes(ev.tournamentName)) continue;
+      else {
+        strings.push(ev.tournamentName);
+        count++;
+      }
+      if(count == AMOUNT_I_WANT) {
+        return strings;
+      }
+    }
+
+    return strings;
+  }
 
   const range = (min: number, max: number): Array<number> => {
     let arr = [];
@@ -92,15 +116,6 @@ const Home: NextPage = () => {
       }
     ]
   };
-
-  const totalWeight = (j: Judge): number => {
-    let s = 0;
-    for(let i of j.evaluations) {
-      s+=i.weight;
-    }
-
-    return s;
-  }
 
   const sumAll = (element: Evaluation) => (element.decision+element.comparison+element.citation+element.coverage+element.bias);
 
@@ -161,16 +176,16 @@ const Home: NextPage = () => {
                 </tr>
                 {auth ? (judge?.evaluations || []).map((element,index)=>(
                   <tr key={element.date.toString() || ""}>
-                    <td>{element.date.toString() || ""}</td>
-                    <td>{element.tournamentName}</td>
-                    <td>{element.roundName}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "" : "#d9d9d9"}}>{element.date.toString() || ""}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "" : "#d9d9d9"}}>{element.tournamentName}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "" : "#d9d9d9"}}>{element.roundName}</td>
 
-                    <td>{element.decision}</td>
-                    <td>{element.comparison}</td>
-                    <td>{element.citation}</td>
-                    <td>{element.coverage}</td>
-                    <td>{element.bias}</td>
-                    <td style={{background: "#FEE499"}}>{sumAll(element)}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "" : "#d9d9d9"}}>{element.decision}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "" : "#d9d9d9"}}>{element.comparison}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "" : "#d9d9d9"}}>{element.citation}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "" : "#d9d9d9"}}>{element.coverage}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "" : "#d9d9d9"}}>{element.bias}</td>
+                    <td style={{background: filter.includes(element.tournamentName) ? "#FEE499" : "#d9d9d9"}}>{sumAll(element)}</td>
 
                     <td style={{width: "10%"}}><DeleteButton callback={deleteButtonCallback} id={index} deleteMessage={"Delete Evaluation"}/></td>
                   </tr>
@@ -180,12 +195,12 @@ const Home: NextPage = () => {
 
                   <td colSpan={3} style={rowCss}></td>
 
-                  <td style={rowCss}>{Math.round(100*computeMeanDecision(judge!))/100}</td>
-                  <td style={rowCss}>{Math.round(100*computeMeanComparison(judge!))/100}</td>
-                  <td style={rowCss}>{Math.round(100*computeMeanCitation(judge!))/100}</td>
-                  <td style={rowCss}>{Math.round(100*computeMeanCoverage(judge!))/100}</td>
-                  <td style={rowCss}>{Math.round(100*computeMeanBias(judge!))/100}</td>
-                  <td style={rowCss}>{Math.round(100*computeMean(judge!))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanDecision(judge!, filter))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanComparison(judge!, filter))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanCitation(judge!, filter))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanCoverage(judge!, filter))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMeanBias(judge!, filter))/100}</td>
+                  <td style={rowCss}>{Math.round(100*computeMean(judge!, filter))/100}</td>
                   <td style={rowCss}></td>
 
                   </tr>

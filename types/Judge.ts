@@ -66,74 +66,110 @@ export const computeZ = (judge: Judge, judges: Judge[]): number => {
     return -1 * z;
 }
 
-export const computeMean = (j: Judge): number => {
+export const computeMean = (j: Judge, f?: string[]): number => {
     let wsum = 0;
     let wtotal = 0;
+    let filter = false;
+
+    // f is filters
+    if ( f ) filter = true;
 
     for (let ev of j.evaluations) {
-        wsum += (ev.bias + ev.citation + ev.comparison + ev.coverage + ev.decision) * ev.weight;
-        wtotal += ev.weight;
+        if ( !filter || f?.includes(ev.tournamentName) ) {
+            wsum += (ev.bias + ev.citation + ev.comparison + ev.coverage + ev.decision) * ev.weight;
+            wtotal += ev.weight;
+        }
     }
 
-    return wsum / wtotal
+    return wsum / wtotal;
 }
 
-export const computeMeanDecision = (j: Judge): number => {
+export const computeMeanDecision = (j: Judge, f?: string[]): number => {
     let wsum = 0;
     let wtotal = 0;
+    let filter = false;
+
+    // f is filters
+    if ( f ) filter = true;
 
     for (let ev of j.evaluations) {
-        wsum += (ev.decision) * ev.weight;
-        wtotal += ev.weight;
+        if ( !filter || f?.includes(ev.tournamentName) ) {
+            wsum += (ev.decision) * ev.weight;
+            wtotal += ev.weight;
+        }
     }
 
-    return wsum / wtotal
+    return wsum / wtotal;
 }
 
-export const computeMeanCoverage = (j: Judge): number => {
+export const computeMeanCoverage = (j: Judge, f?: string[]): number => {
     let wsum = 0;
     let wtotal = 0;
+    let filter = false;
+
+    // f is filters
+    if ( f ) filter = true;
 
     for (let ev of j.evaluations) {
-        wsum += (ev.coverage) * ev.weight;
-        wtotal += ev.weight;
+        if ( !filter || f?.includes(ev.tournamentName) ) {
+            wsum += (ev.coverage) * ev.weight;
+            wtotal += ev.weight;
+        }
     }
 
-    return wsum / wtotal
+    return wsum / wtotal;
 }
 
-export const computeMeanCitation = (j: Judge): number => {
+export const computeMeanCitation = (j: Judge, f?: string[]): number => {
     let wsum = 0;
     let wtotal = 0;
+    let filter = false;
+
+    // f is filters
+    if ( f ) filter = true;
 
     for (let ev of j.evaluations) {
-        wsum += (ev.citation) * ev.weight;
-        wtotal += ev.weight;
+        if ( !filter || f?.includes(ev.tournamentName) ) {
+            wsum += (ev.citation) * ev.weight;
+            wtotal += ev.weight;
+        }
     }
 
-    return wsum / wtotal
+    return wsum / wtotal;
 }
 
-export const computeMeanComparison = (j: Judge): number => {
+export const computeMeanComparison = (j: Judge, f?: string[]): number => {
     let wsum = 0;
     let wtotal = 0;
+    let filter = false;
+
+    // f is filters
+    if ( f ) filter = true;
 
     for (let ev of j.evaluations) {
-        wsum += (ev.comparison) * ev.weight;
-        wtotal += ev.weight;
+        if ( !filter || f?.includes(ev.tournamentName) ) {
+            wsum += (ev.comparison) * ev.weight;
+            wtotal += ev.weight;
+        }
     }
 
-    return wsum / wtotal
+    return wsum / wtotal;
 }
 
-export const computeMeanBias = (j: Judge): number => {
+export const computeMeanBias = (j: Judge, f?: string[]): number => {
     let wsum = 0;
     let wtotal = 0;
+    let filter = false;
+
+    // f is filters
+    if ( f ) filter = true;
 
     for (let ev of j.evaluations) {
-        wsum += (ev.bias) * ev.weight;
-        wtotal += ev.weight;
+        if ( !filter || f?.includes(ev.tournamentName) ) {
+            wsum += (ev.bias) * ev.weight;
+            wtotal += ev.weight;
+        }
     }
 
-    return wsum / wtotal
+    return wsum / wtotal;
 }
