@@ -3,8 +3,10 @@ import { useRouter } from "next/router";
 import { FunctionComponent, useState, useRef, useEffect } from "react";
 import { Judge } from "../../types/Judge";
 import styles from '../../styles/Q.module.css';
+import { EvalUploadArea } from "./EvalUploadArea";
+import { Evaluation } from "../../types/Evaluation";
 
-export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Judge}> = ({callback, judge}) => {
+export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Judge, updateJudge: Function}> = ({callback, judge, updateJudge}) => {
     const [tournament, setTournament] = useState("");
     const [round, setRound] = useState("Round 1");
     const [flight, setFlight] = useState("A");
@@ -42,6 +44,30 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
       });
       readTournamentNameFromCookies();
     },[]);
+
+    const uploadEvaluationsCallback = (input: Evaluation[]) => {
+      let newEv = [...input, ...judge.evaluations].sort((a: Evaluation, b: Evaluation) => (new Date(a.date).toString()) < (new Date(b.date).toString()) ? 1 : -1);
+      updateJudge(newEv);
+
+      //upload to database
+      for(let ev of [...input]) {
+        console.log(ev);
+        let body = {
+          tName: ev.isImprovement ? "Improvement Round" : ev.tournamentName,
+          date: "",
+          rName: ev.isImprovement ? "Improvement Round" : `${ev.roundName}`, // e.g., Round 1 Flight A etc.
+          isPrelim: ev.roundName.indexOf("Round")!=-1&&!ev.isImprovement, // ignores input
+          isImprovement: ev.isImprovement,
+          decision: ev.decision,
+          comparison: ev.comparison,
+          citation: ev.citation,
+          coverage: ev.coverage,
+          bias: ev.bias,
+          weight: 1,
+        }
+        axios.post(`https://${backendUrl.current}/update/judge/${apiKey.current}/${query.judgeId}`, body).then((_) => {});
+      }
+    }
   
     const { query } = useRouter();
   
@@ -143,8 +169,12 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
           });
 
           storeTournamentNameInCookies(tournament);
-          axios.post(`https://${backendUrl.current}/update/judge/${apiKey.current}/${query.judgeId}`, body).then((_) => {})
+          axios.post(`https://${backendUrl.current}/update/judge/${apiKey.current}/${query.judgeId}`, body).then((_) => {});
         }}>Create Evaluation</button>
+      </div>
+
+      <div className={styles.createform}>
+        <EvalUploadArea judge={judge} addEval={uploadEvaluationsCallback}/>
       </div>
   
     </div>);

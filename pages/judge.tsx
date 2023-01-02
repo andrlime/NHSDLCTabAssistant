@@ -39,7 +39,7 @@ const Home: NextPage = () => {
       // replace later
       axios.get(`https://${backendUrl.current}/get/judge/${apiKey.current}/${query.judgeId || ""}`).then((res) => {
         let j = (res.data.result);
-        j.evaluations = j.evaluations.sort((a: Evaluation, b: Evaluation) => (new Date(a.date).toString()) < (new Date(b.date).toString()) ? 1 : -1)
+        j.evaluations = j.evaluations.sort((a: Evaluation, b: Evaluation) => (new Date(a.date).toString()) < (new Date(b.date).toString()) ? 1 : -1);
         setJudge(j);
         setFilter(findFourMostRecents(j));
         setLoaded(true);
@@ -211,7 +211,12 @@ const Home: NextPage = () => {
               </table> : <span className={styles.label}>No Evaluations</span>}
 
               
-              {auth ? <CreateEvaluation callback={pushNewEvaluation} judge={judge || {_id: "", name: "", email: "", evaluations: []}}/> : <span className={styles.sublabel}>Login to create</span>}
+              {auth ? <CreateEvaluation updateJudge={(evals: Evaluation[]) => {
+                let j = judge;
+                j!.evaluations = evals;
+                setJudge(j);
+                setFilter(findFourMostRecents(j!));
+              }} callback={pushNewEvaluation} judge={judge || {_id: "", name: "", email: "", evaluations: []}}/> : <span className={styles.sublabel}>Login to create</span>}
             
             </div> : "Loading..."}
 
