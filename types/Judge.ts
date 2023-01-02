@@ -67,109 +67,193 @@ export const computeZ = (judge: Judge, judges: Judge[]): number => {
 }
 
 export const computeMean = (j: Judge, f?: string[]): number => {
-    let wsum = 0;
-    let wtotal = 0;
-    let filter = false;
-
     // f is filters
-    if ( f ) filter = true;
+    if ( f ) { // yes filters, only do the ones inside filters
+        let averages = [];
+        for(let currentFilter of f) { // HORRIBLE O(n^4)?
+            let count = 0;
+            let sum = 0;
+            for (let ev of j.evaluations) {
+                if(ev.tournamentName == currentFilter) {
+                    count++;
+                    sum+=(ev.bias + ev.citation + ev.comparison + ev.coverage + ev.decision);
+                }
+            }
+            averages.push(sum/count);
+        }
 
-    for (let ev of j.evaluations) {
-        if ( !filter || f?.includes(ev.tournamentName) ) {
+        // now i have all the averages, so i want to average the averages
+
+        return averages.reduce((acc, cur) => acc+cur,0)/averages.length;
+    } else { // no filters, do all of them
+        let wsum = 0;
+        let wtotal = 0;
+        
+        for (let ev of j.evaluations) {
             wsum += (ev.bias + ev.citation + ev.comparison + ev.coverage + ev.decision) * ev.weight;
             wtotal += ev.weight;
         }
-    }
 
-    return wsum / wtotal;
+        return wsum / wtotal;
+    }
 }
 
 export const computeMeanDecision = (j: Judge, f?: string[]): number => {
-    let wsum = 0;
-    let wtotal = 0;
-    let filter = false;
-
     // f is filters
-    if ( f ) filter = true;
+    if ( f ) { // yes filters, only do the ones inside filters
+        let averages = [];
+        for(let currentFilter of f) { // HORRIBLE O(n^4)?
+            let count = 0;
+            let sum = 0;
+            for (let ev of j.evaluations) {
+                if(ev.tournamentName == currentFilter) {
+                    count++;
+                    sum+=(ev.decision);
+                }
+            }
+            averages.push(sum/count);
+        }
 
-    for (let ev of j.evaluations) {
-        if ( !filter || f?.includes(ev.tournamentName) ) {
+        // now i have all the averages, so i want to average the averages
+
+        return averages.reduce((acc, cur) => acc+cur,0)/averages.length;
+    } else { // no filters, do all of them
+        let wsum = 0;
+        let wtotal = 0;
+
+        for (let ev of j.evaluations) {
             wsum += (ev.decision) * ev.weight;
             wtotal += ev.weight;
         }
-    }
 
-    return wsum / wtotal;
+        return wsum / wtotal;
+    }
 }
 
 export const computeMeanCoverage = (j: Judge, f?: string[]): number => {
-    let wsum = 0;
-    let wtotal = 0;
-    let filter = false;
-
     // f is filters
-    if ( f ) filter = true;
+    if ( f ) { // yes filters, only do the ones inside filters
+        let averages = [];
+        for(let currentFilter of f) { // HORRIBLE O(n^4)?
+            let count = 0;
+            let sum = 0;
+            for (let ev of j.evaluations) {
+                if(ev.tournamentName == currentFilter) {
+                    count++;
+                    sum+=(ev.coverage);
+                }
+            }
+            averages.push(sum/count);
+        }
 
-    for (let ev of j.evaluations) {
-        if ( !filter || f?.includes(ev.tournamentName) ) {
+        // now i have all the averages, so i want to average the averages
+
+        return averages.reduce((acc, cur) => acc+cur,0)/averages.length;
+    } else { // no filters, do all of them
+        let wsum = 0;
+        let wtotal = 0;
+        
+        for (let ev of j.evaluations) {
             wsum += (ev.coverage) * ev.weight;
             wtotal += ev.weight;
         }
-    }
 
-    return wsum / wtotal;
+        return wsum / wtotal;
+    }
 }
 
 export const computeMeanCitation = (j: Judge, f?: string[]): number => {
-    let wsum = 0;
-    let wtotal = 0;
-    let filter = false;
-
     // f is filters
-    if ( f ) filter = true;
+    if ( f ) { // yes filters, only do the ones inside filters
+        let averages = [];
+        for(let currentFilter of f) { // HORRIBLE O(n^4)?
+            let count = 0;
+            let sum = 0;
+            for (let ev of j.evaluations) {
+                if(ev.tournamentName == currentFilter) {
+                    count++;
+                    sum+=(ev.citation);
+                }
+            }
+            averages.push(sum/count);
+        }
 
-    for (let ev of j.evaluations) {
-        if ( !filter || f?.includes(ev.tournamentName) ) {
+        // now i have all the averages, so i want to average the averages
+
+        return averages.reduce((acc, cur) => acc+cur,0)/averages.length;
+    } else { // no filters, do all of them
+        let wsum = 0;
+        let wtotal = 0;
+        
+        for (let ev of j.evaluations) {
             wsum += (ev.citation) * ev.weight;
             wtotal += ev.weight;
         }
-    }
 
-    return wsum / wtotal;
+        return wsum / wtotal;
+    }
 }
 
 export const computeMeanComparison = (j: Judge, f?: string[]): number => {
-    let wsum = 0;
-    let wtotal = 0;
-    let filter = false;
-
     // f is filters
-    if ( f ) filter = true;
+    if ( f ) { // yes filters, only do the ones inside filters
+        let averages = [];
+        for(let currentFilter of f) { // HORRIBLE O(n^4)?
+            let count = 0;
+            let sum = 0;
+            for (let ev of j.evaluations) {
+                if(ev.tournamentName == currentFilter) {
+                    count++;
+                    sum+=(ev.comparison);
+                }
+            }
+            averages.push(sum/count);
+        }
 
-    for (let ev of j.evaluations) {
-        if ( !filter || f?.includes(ev.tournamentName) ) {
+        // now i have all the averages, so i want to average the averages
+
+        return averages.reduce((acc, cur) => acc+cur,0)/averages.length;
+    } else { // no filters, do all of them
+        let wsum = 0;
+        let wtotal = 0;
+        
+        for (let ev of j.evaluations) {
             wsum += (ev.comparison) * ev.weight;
             wtotal += ev.weight;
         }
-    }
 
-    return wsum / wtotal;
+        return wsum / wtotal;
+    }
 }
 
 export const computeMeanBias = (j: Judge, f?: string[]): number => {
-    let wsum = 0;
-    let wtotal = 0;
-    let filter = false;
-
     // f is filters
-    if ( f ) filter = true;
+    if ( f ) { // yes filters, only do the ones inside filters
+        let averages = [];
+        for(let currentFilter of f) { // HORRIBLE O(n^4)?
+            let count = 0;
+            let sum = 0;
+            for (let ev of j.evaluations) {
+                if(ev.tournamentName == currentFilter) {
+                    count++;
+                    sum+=(ev.bias);
+                }
+            }
+            averages.push(sum/count);
+        }
 
-    for (let ev of j.evaluations) {
-        if ( !filter || f?.includes(ev.tournamentName) ) {
+        // now i have all the averages, so i want to average the averages
+
+        return averages.reduce((acc, cur) => acc+cur,0)/averages.length;
+    } else { // no filters, do all of them
+        let wsum = 0;
+        let wtotal = 0;
+        
+        for (let ev of j.evaluations) {
             wsum += (ev.bias) * ev.weight;
             wtotal += ev.weight;
         }
-    }
 
-    return wsum / wtotal;
+        return wsum / wtotal;
+    }
 }

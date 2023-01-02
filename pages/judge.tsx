@@ -131,6 +131,7 @@ const Home: NextPage = () => {
       }
     }
     let newJudge = {_id: judge._id, name: judge.name, email: judge.email, evaluations: j};
+    setFilter(findFourMostRecents(newJudge));
     setJudge(newJudge);
     // call API route to delete the judge from the database
     axios.delete(`https://${backendUrl.current}/delete/evaluation/${apiKey.current}`, {data: {judgeid: query.judgeId, index: e}}).then((_) => {})
