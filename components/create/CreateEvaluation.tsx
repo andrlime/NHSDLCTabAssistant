@@ -45,15 +45,6 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
   
     const { query } = useRouter();
   
-    const totalWeight = (j: Judge): number => {
-      let s = 0;
-      for(let i of j.evaluations) {
-        s+=i.weight;
-      }
-  
-      return s;
-    }
-  
     return (<div className={styles.sublabel} style={{paddingLeft: "0rem", flexDirection: "column"}}>
   
       <div className={styles.createform}>
@@ -124,7 +115,7 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
       <div className={styles.createform}>
         <button onClick={(_) => {
           let body = {
-            tName: tournament,
+            tName: improvement ? "Improvement Round" : tournament,
             rName: improvement ? "Improvement Round" : `${round} Flight ${flight}`, // e.g., Round 1 Flight A etc.
             isPrelim: round.indexOf("Round")!=-1&&!improvement,
             isImprovement: improvement,
@@ -133,12 +124,12 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
             citation: cit,
             coverage: cov,
             bias: bias,
-            weight: improvement ? totalWeight(judge)*0.25 : 1,
+            weight: 1,
             date: new Date()
           };
   
           callback({
-            tournamentName: tournament,
+            tournamentName: improvement ? "Improvement Round" : tournament,
             date: "",
             roundName: improvement ? "Improvement Round" : `${round} Flight ${flight}`, // e.g., Round 1 Flight A etc.
             isPrelim: round.indexOf("Round")!=-1&&!improvement,
@@ -148,7 +139,7 @@ export const CreateEvaluation: FunctionComponent<{callback: Function, judge: Jud
             citation: cit,
             coverage: cov,
             bias: bias,
-            weight: improvement ? totalWeight(judge)*0.25 : 1,
+            weight: 1,
           });
 
           storeTournamentNameInCookies(tournament);
