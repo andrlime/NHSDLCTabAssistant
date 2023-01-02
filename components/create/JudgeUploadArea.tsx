@@ -1,11 +1,8 @@
 import { FunctionComponent } from "react";
 import { Judge } from "../../types/Judge";
+import FileUpload from "./FileUpload";
 
-export const FileUploadArea: FunctionComponent<{addJudge: Function}> = ({addJudge}) => {
-    const processFile = (input: any) => {
-      handleOnSubmit(input);
-    }
-  
+export const JudgeUploadArea: FunctionComponent<{addJudge: Function}> = ({addJudge}) => {
     const processInput = (csvInput: string) => {
       // need to write!
       // format is name, email\n $name, $email
@@ -26,20 +23,6 @@ export const FileUploadArea: FunctionComponent<{addJudge: Function}> = ({addJudg
       }
       addJudge(allJudgesArray);
     }
-  
-    const readFile = async (file: any) => {
-      if (!file) return;
-      const data = await file.text();
-      return data;
-    }
-  
-    const handleOnSubmit = (input: any) => {
-      if(!input) return;
-      readFile(input).then((e) => {
-          processInput(e);
-        }
-      );
-    };
   
     const downloadSample = () => {
       let data = "name,email\n";
@@ -68,7 +51,7 @@ export const FileUploadArea: FunctionComponent<{addJudge: Function}> = ({addJudg
     }
   
     return (<div>
-      <div>Upload Judges from File: <input onChange={(e: any) => processFile(e.target.files[0])} accept={".csv"} type={'file'}></input></div>
+      <div>Upload Judges from File: <FileUpload callback={processInput} typesToAllow={".csv"}/></div>
       <div>Download Template: <button onClick={(_) => downloadSample()}>Download</button></div>
     </div>)
   }

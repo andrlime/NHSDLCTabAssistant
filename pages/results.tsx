@@ -8,39 +8,25 @@ import html2canvas from "html2canvas";
 import NavigationBar from '../components/nav/NavigationMenu';
 import Speaker from '../types/Speaker';
 import Team from '../types/Team';
-import { BreakTable } from '../components/other/BreakTable';
-import { SpeakerTable } from '../components/other/SpeakerTable';
+import { BreakTable } from '../components/dataviews/BreakTable';
+import { SpeakerTable } from '../components/dataviews/SpeakerTable';
+import FileUpload from '../components/create/FileUpload';
 
 // can be polished later but for now this is fine
 
 const Home: NextPage = () => {
-  const [fileOne, setFile1] = useState();
-  const [fileTwo, setFile2] = useState();
-  const [fileThree, setFile3] = useState();
-
   const [loadedOne, setLoadedOne] = useState(false);
   const [loadedTwo, setLoadedTwo] = useState(false);
   const [loadedThree, setLoadedThree] = useState(false);
 
-  const readFile = async (file: any) => {
-    if (!file) return
-    const data = await file.text()
-    return data;
-  }
-
-  const handleOnSubmit = (e: any, fileVariable: any, number: number) => {
-      e.preventDefault();
-      if (fileVariable) {
-        readFile(fileVariable).then((e) => {
-          processInput(e, number);
-        }
-        );
-      }
-  };
-
-  //pairings state
   const [typeOfAward, setAwardType] = useState(""); // e.g. Top Speakers
   const [division, setDivision] = useState(""); // e.g. Middle School
+  const [speakers, setSpeakers] = useState<Array<Speaker>>([]);
+  const [teams, setTeams] = useState<Array<Team>>([]);
+  const [topx, setTopx] = useState(0);
+  const [speakersInOrder, setSpeakersIO] = useState<Array<Speaker>>([]);
+  const [teamsInOrder, setTeamsIO] = useState<Array<Team>>([]);
+  const [isShowBreaks, setIsShowBreaks] = useState(false); // if true, show a break table, otherwise, show a speakers table
 
   const getItOut = (list: Array<Speaker | Team>, key: string) => {
     for(let thingy of list) {
@@ -50,12 +36,6 @@ const Home: NextPage = () => {
     }
   }
 
-  const [speakers, setSpeakers] = useState<Array<Speaker>>([]);
-  const [teams, setTeams] = useState<Array<Team>>([]);
-
-  const [speakersInOrder, setSpeakersIO] = useState<Array<Speaker>>([]);
-  const [teamsInOrder, setTeamsIO] = useState<Array<Team>>([]);
-  const [isShowBreaks, setIsShowBreaks] = useState(false); // if true, show a break table, otherwise, show a speakers table
   const processInput = (input: string, type: number) => {
     //TODO: add labels from the spreadsheet
     /**
@@ -178,13 +158,10 @@ const Home: NextPage = () => {
     elem.remove()
   }
 
-  const [topx, setTopx] = useState(0);
-  const redColorHex = "#FF6961";
-
   return (
     <div className={styles.everything}>
       <Head>
-        <title>NHSDLC Tabroom Tools - Rankings</title>
+        <title>NHSDLC Tabroom Tools - Rankings Image Tool</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
       <NavigationBar pageIndex={1}/>
@@ -195,20 +172,17 @@ const Home: NextPage = () => {
 
           <div className={styles.label}>Upload the NHSDLC <em>STUDENT NAMELIST SPREADSHEET</em> from Tencent Docs as a CSV here.</div>
           <div className={styles.sublabel}>
-            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Student Namelist CSV:&nbsp;<input onChange={(e: any) => setFile1(e.target.files[0])} type={"file"} id={"csvFileInput"} accept={".csv"}/></div>
-            <button style={{border: loadedOne ? `1px solid #ECC132` : `1px solid ${redColorHex}`}} onClick={(e: any) => {handleOnSubmit(e, fileOne, 1)}}>Upload Namelist CSV</button>
+            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Student Namelist CSV:&nbsp;<FileUpload callback={(e: any) => processInput(e, 1)} typesToAllow={".csv"}/></div>
           </div>
 
           <div className={styles.label}>Upload the Tabroom <em>SPEAKER RANK SPREADSHEET</em> as a CSV here.</div>
           <div className={styles.sublabel}>
-            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Speaker Ranks CSV:&nbsp;<input onChange={(e: any) => setFile2(e.target.files[0])} type={"file"} id={"csvFileInput"} accept={".csv"}/></div>
-            <button style={{border: loadedTwo ? `1px solid #ECC132` : `1px solid ${redColorHex}`}} onClick={(e: any) => {handleOnSubmit(e, fileTwo, 2)}}>Upload Speaker Rank CSV</button>
+            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Speaker Ranks CSV:&nbsp;<FileUpload callback={(e: any) => processInput(e, 2)} typesToAllow={".csv"}/></div>
           </div>
 
           <div className={styles.label}>Upload the Tabroom <em>TEAM RANK SPREADSHEET</em> as a CSV here.</div>
           <div className={styles.sublabel}>
-            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Team Ranks CSV:&nbsp;<input onChange={(e: any) => setFile3(e.target.files[0])} type={"file"} id={"csvFileInput"} accept={".csv"}/></div>
-            <button style={{border: loadedThree ? `1px solid #ECC132` : `1px solid ${redColorHex}`}} onClick={(e: any) => {handleOnSubmit(e, fileThree, 3)}}>Upload Team Rank CSV</button>
+            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Team Ranks CSV:&nbsp;<FileUpload callback={(e: any) => processInput(e, 3)} typesToAllow={".csv"}/></div>
           </div>
 
           <div className={styles.label}>Choose which one to export.</div>

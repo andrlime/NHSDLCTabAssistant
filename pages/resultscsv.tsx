@@ -308,7 +308,7 @@ const Home: NextPage = () => {
   return (
     <div className={styles.everything}>
       <Head>
-        <title>NHSDLC Tabroom Tools - Results</title>
+        <title>NHSDLC Tabroom Tools - Results CSV Tool</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
       <NavigationBar pageIndex={2}/>

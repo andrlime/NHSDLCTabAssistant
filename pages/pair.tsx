@@ -7,32 +7,16 @@ import stylesQ from '../styles/R.module.css';
 import html2canvas from "html2canvas";
 import NavigationBar from '../components/nav/NavigationMenu';
 import Debate from '../types/Debate';
-import { FlightTable } from '../components/other/FlightTable';
+import { FlightTable } from '../components/dataviews/FlightTable';
+import FileUpload from '../components/create/FileUpload';
 
 const Home: NextPage = () => {
-  const [file, setFile] = useState();
   const [stTime, setStTime] = useState(0);
   const [roundsA, setA] = useState<Array<Debate>>([]);
   const [roundsB, setB] = useState<Array<Debate>>([]);
 
   const [division, setDivision] = useState("");
   const [roundName, setRoundName] = useState("");
-
-  const readFile = async (file: any) => {
-    if (!file) return
-    const data = await file.text()
-    return data;
-  }
-
-  const handleOnSubmit = (e: any) => {
-      e.preventDefault();
-      if (file) {
-        readFile(file).then((e) => {
-          processInput(e);
-        }
-        );
-      }
-  };
 
   let divisionDictionary = {"MSPF": "Middle School Division", "MSNPF": "Middle School Novice Division", "OPF": "Open Division", "NPF": "Novice Division", "JVPF": "Junior Varsity Division", "VPF": "Varsity Division"};
   let roundDictionary = {"R1": "Round 1", "R2": "Round 2", "R3": "Round 3", "R4": "Round 4", "R5": "Round 5", "R6": "Round 6", "TOF": "Triple Octofinals", "Triples": "Triple Octofinals", "DOF": "Double Octofinals", "Doubles": "Double Octofinals",
@@ -172,7 +156,7 @@ const Home: NextPage = () => {
   return (
     <div className={styles.everything}>
       <Head>
-        <title>NHSDLC Tabroom Tools - Pairings</title>
+        <title>NHSDLC Tabroom Tools - Pairings Tool</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
       <NavigationBar pageIndex={0}/>
@@ -183,8 +167,7 @@ const Home: NextPage = () => {
 
           <div className={styles.label}>Upload the horizontal schematic for this round here.</div>
           <div className={styles.sublabel}>
-            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Pairings CSV:&nbsp;<input onChange={(e: any) => setFile(e.target.files[0])} type={"file"} id={"csvFileInput"} accept={".csv"}/></div>
-            <button onClick={(e: any) => {handleOnSubmit(e)}}>Upload Pairings CSV</button>
+            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Pairings CSV:&nbsp;<FileUpload callback={processInput} typesToAllow={".csv"}/></div>
           </div>
 
           <div className={styles.label}>Make manual changes. If any are red, exporting will fail.</div>

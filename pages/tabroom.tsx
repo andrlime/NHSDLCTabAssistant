@@ -6,25 +6,9 @@ import styles from '../styles/Q.module.css';
 import NavigationBar from '../components/nav/NavigationMenu';
 import Speaker from '../types/Speaker';
 import Team from '../types/Team';
+import FileUpload from '../components/create/FileUpload';
 
 const Home: NextPage = () => {
-  const readFile = async (file: any) => {
-    if (!file) return
-    const data = await file.text()
-    return data;
-  }
-  
-  const handleOnSubmit = (e: any) => {
-      e.preventDefault();
-      if (nlFile) {
-        readFile(nlFile).then((e) => {
-          setNamelist(e);
-        }
-        );
-      }
-  };
-
-  const [nlFile, setNLFile] = useState();
   const [namelist, setNamelist] = useState("");
   const processInput = (input: string): Array<{name: string, data: string}> => {
     //TODO: add labels from the spreadsheet
@@ -132,7 +116,7 @@ const Home: NextPage = () => {
   return (
     <div className={styles.everything}>
       <Head>
-        <title>NHSDLC Tabroom Tools - Rankings</title>
+        <title>NHSDLC Tabroom Tools - Tabroom Convert Tool</title>
         <link rel="icon" type="image/x-icon" href="/icon.png"/>
       </Head>
       <NavigationBar pageIndex={3}/>
@@ -143,8 +127,10 @@ const Home: NextPage = () => {
 
           <div className={styles.label}>Upload the NHSDLC <em>STUDENT NAMELIST SPREADSHEET</em> from Tencent Docs as a CSV here.</div>
           <div className={styles.sublabel}>
-            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Student Namelist CSV:&nbsp;<input onChange={(e: any) => setNLFile(e.target.files[0])} type={"file"} id={"csvFileInput"} accept={".csv"}/></div>
-            <button style={{border: namelist ? `1px solid #ECC132` : `1px solid ${redColorHex}`}} onClick={(e: any) => {handleOnSubmit(e)}}>Upload Namelist CSV</button>
+            <div style={{whiteSpace: "nowrap", margin: "0.2rem"}}>Student Namelist CSV:&nbsp;<FileUpload callback={(e: any) => {
+              setNamelist(e);
+              processInput(e);
+            }} typesToAllow={".csv"}/></div>
           </div>
 
           <div className={styles.label}>Export as multiple CSVs (please allow your browser to download multiple files).</div>

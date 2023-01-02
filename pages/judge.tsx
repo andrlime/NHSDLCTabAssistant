@@ -9,7 +9,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import DeleteButton from '../components/buttons/DeleteButton';
 import NavigationBar from '../components/nav/NavigationMenu';
-import { LineGraph } from '../components/other/LineGraph';
+import { LineGraph } from '../components/dataviews/LineGraph';
 import { Evaluation } from '../types/Evaluation';
 import { computeMean, Judge } from '../types/Judge';
 import { CreateEvaluation } from '../components/create/CreateEvaluation';
