@@ -1,146 +1,146 @@
-$black: #3A001E;
-$white: #FFF6F0;
+$black: #3a001e;
+$white: #fff6f0;
 
-$dark: #0E397A;
-$darktwo: #4A1231;
-$light: #ECC132;
-$verylight: #FEE499;
+$dark: #0e397a;
+$darktwo: #4a1231;
+$light: #ecc132;
+$verylight: #fee499;
 
 .headers {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    //align-items: center;
-    width: 100%;
-    min-width: 400px;
-    padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  //align-items: center;
+  width: 100%;
+  min-width: 400px;
+  padding: 0.5rem;
 
-    .divisionName {
-        font-family: Georgia, 'Times New Roman', Times, serif;
-        font-weight: 700;
-        font-size: 3rem;
-        color: $dark;
-        text-align: center;
-        white-space: nowrap;
-    }
+  .divisionName {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-weight: 700;
+    font-size: 3rem;
+    color: $dark;
+    text-align: center;
+    white-space: nowrap;
+  }
 
-    .roundName {
-        font-family: Georgia, 'Times New Roman', Times, serif;
-        font-weight: 700;
-        font-size: 2.5rem;
-        color: $dark;
-        text-align: center;
-        white-space: nowrap;
-    }
+  .roundName {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: $dark;
+    text-align: center;
+    white-space: nowrap;
+  }
 }
 
 .tables {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 75%;
+  max-width: 1200px;
+  min-width: 500px;
+  padding: 0.5rem;
+
+  .boxA {
+    margin: 2rem;
+  }
+
+  .timeLabel {
+    font-size: 1.25rem;
+    color: #000;
+    font-weight: 700;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 75%;
-    max-width: 1200px;
-    min-width: 500px;
-    padding: 0.5rem;
+    justify-content: space-between;
+    margin-bottom: 0.2rem;
+  }
 
-    .boxA {
-        margin: 2rem;
+  #one {
+    tr:nth-child(1) {
+      td {
+        text-align: center;
+        padding: 0.2rem;
+        background-color: $dark;
+        color: #fff;
+        font-weight: 800;
+        width: 100%;
+        font-size: 1.1rem;
+        white-space: nowrap;
+        border: 1px solid $black;
+      }
+
+      td:hover {
+        cursor: pointer;
+      }
     }
+  }
 
-    .timeLabel {
-        font-size: 1.25rem;
-        color: #000;
-        font-weight: 700;
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.2rem;
+  #two {
+    tr:nth-child(1) {
+      td {
+        text-align: center;
+        padding: 0.2rem;
+        background-color: $darktwo;
+        color: #fff;
+        font-weight: 800;
+        width: 100%;
+        font-size: 1.1rem;
+        white-space: nowrap;
+        border: 1px solid $black;
+      }
     }
+  }
 
-    #one {
-        tr:nth-child(1) {
-            td {
-                text-align: center;
-                padding: 0.2rem;
-                background-color: $dark;
-                color: #fff;
-                font-weight: 800;
-                width: 100%;
-                font-size: 1.1rem;
-                white-space: nowrap;
-                border: 1px solid $black;
-            }
-
-            td:hover {
-                cursor: pointer;
-            }
-        }
+  #three {
+    tr:nth-child(1) {
+      td {
+        text-align: center;
+        padding: 0.2rem;
+        background-color: $dark;
+        color: #fff;
+        font-weight: 800;
+        width: 100%;
+        font-size: 1.1rem;
+        white-space: nowrap;
+        border: 1px solid $black;
+      }
     }
-
-    #two {
-        tr:nth-child(1) {
-            td {
-                text-align: center;
-                padding: 0.2rem;
-                background-color: $darktwo;
-                color: #fff;
-                font-weight: 800;
-                width: 100%;
-                font-size: 1.1rem;
-                white-space: nowrap;
-                border: 1px solid $black;
-            }
-        }
-    }
-
-    #three {
-        tr:nth-child(1) {
-            td {
-                text-align: center;
-                padding: 0.2rem;
-                background-color: $dark;
-                color: #fff;
-                font-weight: 800;
-                width: 100%;
-                font-size: 1.1rem;
-                white-space: nowrap;
-                border: 1px solid $black;
-            }
-        }
-    }
+  }
 }
 
 .footer {
-    display: flex;
-    width: 100%;
-    padding: 1rem;
+  display: flex;
+  width: 100%;
+  padding: 1rem;
 
-    img {
-        width: 36%;
-    }
+  img {
+    width: 36%;
+  }
 }
 
 .table {
-    width: 100%;
-    border: 1px solid $black;
-    tr {
-        td {
-            text-align: center;
-            background-color: #FFF;
-            padding: 0.2rem;
-            color: #000;
-            width: 100%;
-            white-space: nowrap;
-            border: 1px solid $black;
-        }
-
-        td:nth-child(1) {
-            text-align: center;
-            background-color: $verylight;
-            padding: 0.2rem;
-            color: #000;
-            width: 100%;
-            white-space: nowrap;
-            border: 1px solid $black;
-        }
+  width: 100%;
+  border: 1px solid $black;
+  tr {
+    td {
+      text-align: center;
+      background-color: #fff;
+      padding: 0.2rem;
+      color: #000;
+      width: 100%;
+      white-space: nowrap;
+      border: 1px solid $black;
     }
+
+    td:nth-child(1) {
+      text-align: center;
+      background-color: $verylight;
+      padding: 0.2rem;
+      color: #000;
+      width: 100%;
+      white-space: nowrap;
+      border: 1px solid $black;
+    }
+  }
 }
