@@ -91,7 +91,7 @@ const Home: NextPage = () => {
       let output = "";
 
       for (let item of thingsToParse) {
-        let subsssss = ((item+"").match(/.*\d{6}/g) || "")[0];
+        let subsssss = ((String(item)).match(/.*\d{6}/g) || "")[0];
         output+=subsssss.split(',').join(" ") + " ";
       }
       teamsRaw.current = output;
@@ -248,7 +248,7 @@ const Home: NextPage = () => {
 
   const getItOut = (list: Array<Speaker | Team>, key: string) => {
     for(let thingy of list) {
-      if((thingy.id + "") == key) {
+      if((String(thingy.id)) == key) {
         return thingy;
       }
     }
