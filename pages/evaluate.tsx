@@ -165,15 +165,15 @@ const Home: NextPage = () => {
                 <td>{element.name}</td>
                 <td>{element.email}</td>
 
-                <td>{Math.round( 1000 * computeMeanDecision(element) ) / 1000 || "None"}</td>
-                <td>{Math.round( 1000 * computeMeanComparison(element) ) / 1000 || "None"}</td>
-                <td>{Math.round( 1000 * computeMeanCitation(element) ) / 1000 || "None"}</td>
-                <td>{Math.round( 1000 * computeMeanCoverage(element) ) / 1000 || "None"}</td>
-                <td>{Math.round( 1000 * computeMeanBias(element) ) / 1000 || "None"}</td>
+                <td>{Math.round( 1000 * computeMeanDecision(element) ) / 1000}</td>
+                <td>{Math.round( 1000 * computeMeanComparison(element) ) / 1000}</td>
+                <td>{Math.round( 1000 * computeMeanCitation(element) ) / 1000}</td>
+                <td>{Math.round( 1000 * computeMeanCoverage(element) ) / 1000}</td>
+                <td>{Math.round( 1000 * computeMeanBias(element) ) / 1000}</td>
 
-                <td>{Math.round( 1000 * computeMean(element) ) / 1000 || "None"}</td>
+                <td>{Math.round( 1000 * computeMean(element) ) / 1000}</td>
                 <td>{Math.round( 1000 * computeStdev(element) ) / 1000 || "0"}</td>
-                <td>{Math.round( 1000 * computeZ(element, judges) )/1000 || "None"}</td>
+                <td>{Math.round( 1000 * computeZ(element, judges) )/1000}</td>
                 <Link href={element._id!="REFRESH TO SEE" ? `/judge?judgeId=${element._id}&user=${username}&pass=${password}` : ''} as={element._id!="REFRESH TO SEE" ? `/judge` : ''}><td id={styles.customrow} style={{width: "10%", padding: "0.3rem"}}>&rarr;</td></Link>
                 <td style={{width: "10%"}}><DeleteButton callback={deleteButtonCallback} id={element._id.toString()} deleteMessage={"Delete Judge"}/></td>
               </tr>
