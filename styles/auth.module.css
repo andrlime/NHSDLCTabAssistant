@@ -1,1 +1,32 @@
-.authform{width:100%;justify-content:center;align-items:center;display:flex;flex-direction:column}.authform div{color:#ffffff;font-weight:600;font-size:2rem}.authform input{padding:0.3rem;font-size:1.5rem;border:none;margin:0.25rem}.authform button{background-color:#ecc132;padding:0.8rem;margin:0.25rem;border:none;font-size:2rem;color:#000000;transition:500ms all ease-in-out}.authform button:hover{background-color:#f07e40;transition:500ms all ease-in-out;cursor:pointer}
+.authform {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.authform div {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 2rem;
+}
+.authform input {
+  padding: 0.3rem;
+  font-size: 1.5rem;
+  border: none;
+  margin: 0.25rem;
+}
+.authform button {
+  background-color: #ecc132;
+  padding: 0.8rem;
+  margin: 0.25rem;
+  border: none;
+  font-size: 2rem;
+  color: #000000;
+  transition: 500ms all ease-in-out;
+}
+.authform button:hover {
+  background-color: #f07e40;
+  transition: 500ms all ease-in-out;
+  cursor: pointer;
+}
