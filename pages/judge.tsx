@@ -32,37 +32,27 @@ const Home: NextPage = () => {
   };
 
   const { query } = useRouter();
+  const router = useRouter();
   useEffect(() => {
     axios.get("/api/getkey").then((res)=> {
       backendUrl.current = res.data.backendUrl || "";
       apiKey.current = res.data.apiKey || "";
       // replace later
-      axios.get(`https://${backendUrl.current}/get/judge/${apiKey.current}/${query.judgeId || ""}`).then((res) => {
+      axios.get(`http${backendUrl.current.indexOf('localhost')!=-1 ? "" : "s"}://${backendUrl.current}/get/judge/${apiKey.current}/${query.judgeId || ""}`).then((res) => {
         let j = (res.data.result);
         j.evaluations = j.evaluations.sort((a: Evaluation, b: Evaluation) => (new Date(a.date).toString()) < (new Date(b.date).toString()) ? 1 : -1);
         setJudge(j);
         setFilter(findFourMostRecents(j));
         setLoaded(true);
       });
-      if(localStorage.us && localStorage.pw) {
-        let userpass = `U1A${localStorage.us}P28${localStorage.pw}`;
-        axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
-          if(res.data.auth) {
-            setAuth(true);
-            localStorage.setItem('us', (query.user || "").toString());
-            localStorage.setItem('pw', (query.pass || "").toString());
-          }
-        });
+      
+      if(query.auth) {
+        setAuth(true);
       } else {
-        let userpass = `U1A${query.user}P28${query.pass}`;
-        axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
-          if(res.data.auth) {
-            setAuth(true);
-            localStorage.setItem('us', (query.user || "").toString());
-            localStorage.setItem('pw', (query.pass || "").toString());
-          }
-        });
+        setAuth(false);
+        router.push('/auth');
       }
+
     });
   },[query.judgeId, query.user, query.pass]);
 
@@ -134,7 +124,7 @@ const Home: NextPage = () => {
     setFilter(findFourMostRecents(newJudge));
     setJudge(newJudge);
     // call API route to delete the judge from the database
-    axios.delete(`https://${backendUrl.current}/delete/evaluation/${apiKey.current}`, {data: {judgeid: query.judgeId, index: e}}).then((_) => {})
+    axios.delete(`http${backendUrl.current.indexOf('localhost')!=-1 ? "" : "s"}://${backendUrl.current}/delete/evaluation/${apiKey.current}`, {data: {judgeid: query.judgeId, index: e}}).then((_) => {})
 
   }
 
@@ -148,7 +138,7 @@ const Home: NextPage = () => {
       </Head>
       <NavigationBar pageIndex={4}/>
       <div className={styles.content}>
-        <div className={styles.heading}><Link href="/evaluate"><span>&#9001;</span>&nbsp;&nbsp;&nbsp;</Link>Judge Evaluation System: Judge <span style={{textDecoration: "underline"}}>{loaded ? judge?.name : "Loading..."}</span></div>
+        <div className={styles.heading}><Link href="/evaluate?auth=true" as='/evaluate'><span>&#9001;</span>&nbsp;&nbsp;&nbsp;</Link>Judge Evaluation System: Judge <span style={{textDecoration: "underline"}}>{loaded ? judge?.name : "Loading..."}</span></div>
         <div className={styles.form} style={{paddingLeft: "0rem", width: "100%"}}>
 
           <div className={stylesQ.tables} style={{width: "50%"}}>

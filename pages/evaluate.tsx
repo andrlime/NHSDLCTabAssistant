@@ -10,6 +10,7 @@ import { computeStdev, computeMean, computeZ, Judge, computeMeanDecision, comput
 import NavigationBar from '../components/nav/NavigationMenu';
 import DeleteButton from '../components/buttons/DeleteButton';
 import { CreateJudge } from '../components/create/CreateJudge';
+import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
   const [judges, setJudges] = useState<Array<Judge>>([]);
@@ -21,15 +22,22 @@ const Home: NextPage = () => {
 
   const [filter, setFilter] = useState("");
 
-  const [username, setUser] = useState("");
-  const [password, setPass] = useState("");
   const [auth, setAuth] = useState(false);
-  const [gotPwWrong, setGotPwWrong] = useState(false);
 
   const backendUrl = useRef("");
   const apiKey = useRef("");
+  const router = useRouter();
 
   useEffect(() => {
+    console.log(query, localStorage);
+
+    if(query.auth == 'true') {
+      setAuth(true);
+    } else {
+      setAuth(false);
+      router.push(`/auth`);
+    }
+
     axios.get("/api/getkey").then((res)=> {
       backendUrl.current = res.data.backendUrl || "localhost:9093";
       apiKey.current = res.data.apiKey || "";
@@ -42,16 +50,6 @@ const Home: NextPage = () => {
         setError(err);
         setHasError(true);
       }); 
-
-      let userpass = `U1A${localStorage.us}P28${localStorage.pw}`;
-    
-      axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
-        if(res.data.auth) {
-          setAuth(true);
-        } else {
-          setGotPwWrong(true);
-        }
-      });
     })
   },[]);
 
@@ -109,6 +107,8 @@ const Home: NextPage = () => {
 
   const ascSymb = isAscending ? <>&uarr;</> : <>&darr;</>;
   let multiplierAsc = (isAscending ? 1 : -1);
+  const { query } = useRouter();
+
   return (
     <div className={styles.everything}>
       <Head>
@@ -122,22 +122,6 @@ const Home: NextPage = () => {
 
           <div className={styles.sublabel} style={{paddingLeft: "0.5rem", display: "flex", width: "100%"}} id={styles.customlabel}>
             <input placeholder='filter judges by name or email' value={filter} onChange={(e)=>setFilter(e.target.value)} type={'text'} style={{width: "70%", minWidth: "450px", padding: "0.2rem", margin: "0.25rem"}}></input>
-            
-            {auth ? <span>Logged in</span> : (<><input placeholder='username' value={username} onChange={(e)=>setUser(e.target.value)} type={'text'} style={{border: gotPwWrong ? `2px solid red` : "",width: "25%", minWidth: "200px", padding: "0.2rem", margin: "0.25rem"}}></input>
-            <input placeholder='password' value={password} onChange={(e)=>setPass(e.target.value)} type={'password'} style={{border: gotPwWrong ? `2px solid red` : "", width: "25%", minWidth: "200px", padding: "0.2rem", margin: "0.25rem"}}></input></>)}
-            
-            {auth ? "" : <button onClick={(e) => {
-              let userpass = `U1A${username}P28${password}`;
-              axios.get(`https://${backendUrl.current}/auth/${userpass}`).then((res) => {
-                if(res.data.auth) {
-                  setAuth(true);
-                  localStorage.setItem('us', username);
-                  localStorage.setItem('pw', password);
-                } else {
-                  setGotPwWrong(true);
-                }
-              })
-            }}>Login</button>}
 
           </div>
 
@@ -174,7 +158,7 @@ const Home: NextPage = () => {
                 <td>{Math.round( 1000 * computeMean(element) ) / 1000}</td>
                 <td>{Math.round( 1000 * computeStdev(element) ) / 1000 || "0"}</td>
                 <td>{Math.round( 1000 * computeZ(element, judges) )/1000}</td>
-                <Link href={element._id!="REFRESH TO SEE" ? `/judge?judgeId=${element._id}&user=${username}&pass=${password}` : ''} as={element._id!="REFRESH TO SEE" ? `/judge` : ''}><td id={styles.customrow} style={{width: "10%", padding: "0.3rem"}}>&rarr;</td></Link>
+                <Link href={element._id!="REFRESH TO SEE" ? `/judge?judgeId=${element._id}&auth=true` : ''} as={element._id!="REFRESH TO SEE" ? `/judge` : ''}><td id={styles.customrow} style={{width: "10%", padding: "0.3rem"}}>&rarr;</td></Link>
                 <td style={{width: "10%"}}><DeleteButton callback={deleteButtonCallback} id={element._id.toString()} deleteMessage={"Delete Judge"}/></td>
               </tr>
             )) : <tr><td colSpan={12}>Please log in</td></tr>}
