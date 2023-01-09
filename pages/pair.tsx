@@ -92,9 +92,9 @@ const Home: NextPage = () => {
       if(ROUND_NO == "9") {
         // "if round data 14 exists this round has a panel of 5. RARELY will there be a panel of 7. if there is, well, I hope you're smart enough to write that in"
         if(ROUND_DATA[14]) {
-          roundx.judgeName = (<span>{(ROUND_DATA[8] + "").trim()}&nbsp;<span style={{fontWeight: "600"}}>&#169;</span>, {ROUND_DATA[10]}, {ROUND_DATA[12]}, {ROUND_DATA[14]}, {ROUND_DATA[16]}</span>);
+          roundx.judgeName = (<span>{(String(ROUND_DATA[8])).trim()}&nbsp;<span style={{fontWeight: "600"}}>&#169;</span>, {ROUND_DATA[10]}, {ROUND_DATA[12]}, {ROUND_DATA[14]}, {ROUND_DATA[16]}</span>);
         } else {
-          roundx.judgeName = (<span>{(ROUND_DATA[8] + "").trim()}&nbsp;<span style={{fontWeight: "600"}}>&#169;</span>, {ROUND_DATA[10]}, {ROUND_DATA[12]}</span>);
+          roundx.judgeName = (<span>{(String(ROUND_DATA[8])).trim()}&nbsp;<span style={{fontWeight: "600"}}>&#169;</span>, {ROUND_DATA[10]}, {ROUND_DATA[12]}</span>);
         }
       }
 
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
 
   const redColorHex = "#FF6961";
   const process = (value: number) => {
-    let valueAsString = value+"";
+    let valueAsString = String(value);
     if(value < 1000) {
       return `${valueAsString.charAt(0)}:${valueAsString.substring(1)}`
     } else if (value < 2400) {
@@ -199,7 +199,7 @@ const Home: NextPage = () => {
             </table></div>) : ""}
 
             {roundsB.length > 0 ? (<div className={stylesQ.boxA}>
-            <div className={stylesQ.timeLabel}><span>Flight 2</span> <span>Starts at {process(parseInt(stTime+"")+100)}</span></div>
+            <div className={stylesQ.timeLabel}><span>Flight 2</span> <span>Starts at {process(parseInt(String(stTime))+100)}</span></div>
             <table cellSpacing="0" cellPadding="0" className={stylesQ.table} id={stylesQ.two}>
               <tr style={{height: "1rem"}}><td style={{width:"10%"}}>Flight</td><td style={{width:"20%"}}>Team</td><td style={{width:"20%"}}>Team</td><td style={{width:"25%"}}>Meeting ID</td><td style={{width:"25%"}}>Judges</td></tr>
               <FlightTable rounds={roundsB}/>

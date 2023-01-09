@@ -30,7 +30,7 @@ const Home: NextPage = () => {
 
   const getItOut = (list: Array<Speaker | Team>, key: string) => {
     for(let thingy of list) {
-      if((thingy.id + "") == key) {
+      if((String(thingy.id)) == key) {
         return thingy;
       }
     }
